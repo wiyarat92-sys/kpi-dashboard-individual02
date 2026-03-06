@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Dashboard - สาขาหนองคาย</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Chosen Palette: Warm Neutrals & Status Accents (Slate-50 background, Emerald for success, Amber for warning, Rose for danger, Indigo for primary highlights) -->
+    <!-- Application Structure Plan: A Tabbed Dashboard. 
+         Tab 1: Overview (KPIs & Charts) - Gives immediate high-level health of the branch.
+         Tab 2: Anomalies (Data Patterns) - Deep dives into the specific problems found (Cross-scanning and Fractional errors) using side-by-side comparison cards to make the correlation obvious.
+         Tab 3: Action Plan (Causes & Fixes) - Provides clear, actionable steps based on the data. 
+         This structure separates "What happened", "Why the numbers look weird", and "How to fix it", preventing information overload. -->
+    <!-- Visualization & Content Choices: 
+         - KPIs: Simple numbers to show goal vs actual.
+         - Donut Chart (Chart.js): Shows proportion of matched vs mismatched SKUs. Good for quick visual ratio.
+         - Bar Chart (Chart.js): Compares financial impact of Overage vs Shortage.
+         - Pattern Cards (HTML/CSS Grid): Used for "Cross-Scanning" to visually pair the offsetting errors (e.g. +25 vs -25) to prove the hypothesis.
+         - Confirming NO SVG/Mermaid used. Native Canvas for charts and Unicode emojis for icons. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; color: #334155; }
+        
+        /* Chart Container Styling as per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 350px;
+        }
+        @media (max-width: 640px) {
+            .chart-container { height: 300px; max-height: 300px; }
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+        
+        .tab-btn { transition: all 0.2s; }
+        .tab-btn.active { 
+            border-bottom-width: 4px; 
+            border-color: #4f46e5; 
+            color: #4f46e5; 
+            font-weight: 600; 
+            background-color: #eef2ff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-card { background: rgba(255, 255, 255, 0.95); border: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-800">📊 รายงานวิเคราะห์สต๊อก สาขาหนองคาย</h1>
+                    <p class="text-sm text-slate-500 mt-1">บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด | ประจำเดือนกุมภาพันธ์ 2026</p>
+                    <div class="inline-block mt-2 bg-indigo-50 text-indigo-700 text-xs px-2.5 py-1 rounded-md border border-indigo-100">
+                        🏷️ กลุ่มสินค้า: ท่อพีวีซี-ปุ๋ย-อาหารสัตว์-เมล็ดพันธุ์-ปูน-เหล็ก, กลุ่ม B วัสดุก่อสร้าง
+                    </div>
+                </div>
+                <div class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-4 py-2 rounded-lg text-center">
+                    <p class="text-xs uppercase tracking-wider font-semibold">ความแม่นยำ (Accuracy)</p>
+                    <p class="text-2xl font-bold">86% <span class="text-sm font-normal text-emerald-600">/ เป้า 95%</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto">
+            <button class="tab-btn active px-6 py-3 text-slate-600 hover:text-indigo-600 focus:outline-none whitespace-nowrap" data-tab="overview">
+                📈 1. ภาพรวมข้อมูล (Overview)
+            </button>
+            <button class="tab-btn px-6 py-3 text-slate-600 hover:text-indigo-600 focus:outline-none whitespace-nowrap" data-tab="anomalies">
+                🔍 2. เจาะลึกความผิดปกติ (Data Patterns)
+            </button>
+            <button class="tab-btn px-6 py-3 text-slate-600 hover:text-indigo-600 focus:outline-none whitespace-nowrap" data-tab="actionplan">
+                💡 3. แผนปฏิบัติการ (Action Plan)
+            </button>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- ================= TAB 1: OVERVIEW ================= -->
+        <section id="overview" class="tab-content active">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-slate-800 mb-2">บทสรุปผู้บริหารและการกระจายตัวของข้อมูล</h2>
+                <p class="text-slate-600 text-base leading-relaxed">ส่วนนี้แสดงภาพรวมผลการตรวจนับสต๊อกของสาขาหนองคาย แม้ความแม่นยำจะอยู่ที่ 86% ซึ่งถือว่าอยู่ในเกณฑ์ปานกลาง แต่ยังต่ำกว่าเป้าหมายที่ 95% ข้อมูลเชิงปริมาณด้านล่างนี้จะแสดงให้เห็นถึงสัดส่วนของปัญหาและมูลค่าทางการเงินที่ได้รับผลกระทบ เพื่อประเมินความเสียหายเบื้องต้น</p>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="glass-card rounded-xl p-5 border-l-4 border-indigo-500">
+                    <p class="text-sm text-slate-500 font-medium">รายการที่ตรวจนับทั้งหมด</p>
+                    <h3 class="text-3xl font-bold text-slate-800 mt-1">483 <span class="text-lg font-normal text-slate-500">SKUs</span></h3>
+                    <p class="text-sm mt-2 text-emerald-600">✅ ตรง 414 รายการ</p>
+                </div>
+                <div class="glass-card rounded-xl p-5 border-l-4 border-amber-500">
+                    <p class="text-sm text-slate-500 font-medium">ความคลาดเคลื่อนสุทธิ (ไม่ตรง)</p>
+                    <h3 class="text-3xl font-bold text-slate-800 mt-1">69 <span class="text-lg font-normal text-slate-500">SKUs</span></h3>
+                    <p class="text-sm mt-2 text-slate-600">📉 ขาด 40 รายการ | 📈 เกิน 29 รายการ</p>
+                </div>
+                <div class="glass-card rounded-xl p-5 border-l-4 border-rose-500">
+                    <p class="text-sm text-slate-500 font-medium">มูลค่าความคลาดเคลื่อนรวม</p>
+                    <h3 class="text-3xl font-bold text-rose-600 mt-1">฿10,342<span class="text-lg font-normal">.83</span></h3>
+                    <p class="text-sm mt-2 text-slate-600">มูลค่าที่ขาดหาย: ฿5,789.06</p>
+                </div>
+            </div>
+
+            <!-- Charts Area -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Pie Chart -->
+                <div class="glass-card rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">สัดส่วนความแม่นยำ (จำนวน SKU)</h3>
+                    <div class="chart-container">
+                        <canvas id="accuracyPieChart"></canvas>
+                    </div>
+                </div>
+                <!-- Bar Chart -->
+                <div class="glass-card rounded-xl p-6">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">มูลค่าสินค้าขาด vs เกิน (บาท)</h3>
+                    <div class="chart-container">
+                        <canvas id="valueBarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: DATA PATTERNS ================= -->
+        <section id="anomalies" class="tab-content">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-slate-800 mb-2">เจาะลึกรูปแบบที่ผิดปกติ (Data Pattern Analysis)</h2>
+                <p class="text-slate-600 text-base leading-relaxed">จากการวิเคราะห์ข้อมูลเชิงลึก (Data Profiling) เราพบรูปแบบความผิดปกติ 2 รูปแบบหลักที่มีความเชื่อมโยงกันอย่างมีนัยสำคัญ ข้อมูลในส่วนนี้จะแสดงหลักฐานเชิงประจักษ์ว่าทำไมสต๊อกบางรายการถึงขาด และบางรายการถึงเกินในสัดส่วนที่เท่าๆ กัน</p>
+            </div>
+
+            <!-- Pattern 1: Cross-Scanning -->
+            <div class="mb-10">
+                <h3 class="text-lg font-bold text-indigo-700 bg-indigo-50 px-4 py-2 rounded-t-lg border border-indigo-100 flex items-center">
+                    <span class="text-2xl mr-2">🔄</span> รูปแบบที่ 1: การสลับรหัสสินค้า (Cross-Scanning / Mix-up)
+                </h3>
+                <div class="glass-card p-6 rounded-b-lg rounded-tr-lg border-t-0">
+                    <p class="text-slate-600 mb-6">ข้อสันนิษฐาน: พนักงานหยิบสินค้าถูก แต่ตอนคิดเงินใช้การ "สแกนบาร์โค้ดของสินค้าอีกตัวแทน" ทำให้ตัวนึงสต๊อกบวม อีกตัวสต๊อกหาย</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="crossScanContainer">
+                        <!-- JS will populate these pairing cards -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pattern 2: Fractional Variance -->
+            <div>
+                <h3 class="text-lg font-bold text-amber-700 bg-amber-50 px-4 py-2 rounded-t-lg border border-amber-100 flex items-center">
+                    <span class="text-2xl mr-2">📏</span> รูปแบบที่ 2: ความคลาดเคลื่อนของสินค้าตัดแบ่งขาย (Fractional Variance)
+                </h3>
+                <div class="glass-card p-6 rounded-b-lg rounded-tr-lg border-t-0">
+                    <p class="text-slate-600 mb-6">ข้อสันนิษฐาน: การวัดหรือชั่งน้ำหนักหน้างานไม่แม่นยำ หรือตอนแถมให้ลูกค้าไม่ได้หักออกจากระบบ ทำให้เกิดยอดทศนิยมที่หายไปสะสม</p>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-600 text-sm">
+                                    <th class="p-3 border-b border-slate-200">รหัสสินค้า</th>
+                                    <th class="p-3 border-b border-slate-200">ชื่อสินค้า</th>
+                                    <th class="p-3 border-b border-slate-200 text-center">ยอดในระบบ</th>
+                                    <th class="p-3 border-b border-slate-200 text-center">นับได้จริง</th>
+                                    <th class="p-3 border-b border-slate-200 text-right">ส่วนต่างทศนิยมที่หายไป</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fractionalTableBody">
+                                <!-- JS will populate this -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: ACTION PLAN ================= -->
+        <section id="actionplan" class="tab-content">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-slate-800 mb-2">ข้อสันนิษฐานและแผนปฏิบัติการ (Root Causes & Recommendations)</h2>
+                <p class="text-slate-600 text-base leading-relaxed">จากหลักฐานในหน้าวิเคราะห์ความผิดปกติ ส่วนนี้จะสรุปสาเหตุรากเหง้า (Root Causes) ของปัญหา และนำเสนอแผนงานเพื่อการแก้ไข ทั้งแผนเร่งด่วนที่ต้องทำทันที และแผนระยะกลางเพื่อปรับปรุงกระบวนการอย่างยั่งยืน</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Root Causes Column -->
+                <div class="lg:col-span-1">
+                    <div class="glass-card rounded-xl border-t-4 border-t-rose-500 p-6 h-full">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">⚠️ สาเหตุหลัก (Root Causes)</h3>
+                        <ul class="space-y-4 text-base text-slate-700">
+                            <li class="flex items-start">
+                                <span class="mr-3 text-lg">🛒</span>
+                                <div>
+                                    <strong>จุดชำระเงิน (POS):</strong> พนักงานขี้เกียจสแกนทุกชิ้นที่คละสี ใช้วิธีสแกนอันเดียวแล้วคูณจำนวนเอา
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="mr-3 text-lg">⚖️</span>
+                                <div>
+                                    <strong>การวัด/ชั่ง ไม่ได้มาตรฐาน:</strong> อุปกรณ์ตวงวัดไม่ได้มาตรฐาน หรือพนักงานแถมลูกค้าโดยไม่หักออกจากระบบ
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="mr-3 text-lg">📦</span>
+                                <div>
+                                    <strong>การจัดเรียงหน้าร้าน:</strong> สินค้าแพ็กเกจคล้ายกัน (เช่น สีดำด้าน/ดำเงา) ถูกวางปะปนกันในตะกร้าเดียว หยิบสลับง่าย
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Recommendations Column -->
+                <div class="lg:col-span-2">
+                    <div class="glass-card rounded-xl border-t-4 border-t-emerald-500 p-6 h-full">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">💡 ข้อเสนอแนะเพื่อการปรับปรุง</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Short term -->
+                            <div class="bg-emerald-50/50 p-4 rounded-lg border border-emerald-100">
+                                <h4 class="font-bold text-emerald-800 mb-3">ระยะสั้น (ทำทันทีใน 1 สัปดาห์)</h4>
+                                <ul class="space-y-3 text-base text-slate-700">
+                                    <li class="flex items-start">
+                                        <span class="mr-2 text-emerald-600">✅</span>
+                                        <span><strong>จับคู่นับซ้ำ (Pair Recount):</strong> ให้นับสต๊อก "แบบจับคู่" ทันทีสำหรับกลุ่มที่มีปัญหา (เช่น นับ 3/8" และ 1/2" พร้อมกัน) เพื่อหักลบกลบหนี้ในระบบ</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="mr-2 text-emerald-600">✅</span>
+                                        <span><strong>ป้ายเตือนจุดแคชเชียร์:</strong> ติดป้ายกำชับ "ห้ามสแกนข้ามสี ข้ามไซส์ สแกนทีละชิ้นเท่านั้น"</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Long term -->
+                            <div class="bg-indigo-50/50 p-4 rounded-lg border border-indigo-100">
+                                <h4 class="font-bold text-indigo-800 mb-3">ระยะกลาง-ยาว (ปรับกระบวนการ)</h4>
+                                <ul class="space-y-3 text-base text-slate-700">
+                                    <li class="flex items-start">
+                                        <span class="mr-2 text-indigo-600">📌</span>
+                                        <span><strong>มาตรฐานการตัดแบ่งขาย:</strong> ทำโต๊ะสเกลเมตรถาวร และเปลี่ยนเครื่องชั่งเป็นแบบดิจิทัล ห้ามกะด้วยสายตา</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="mr-2 text-indigo-600">📌</span>
+                                        <span><strong>แยกพื้นที่จัดแสดง:</strong> ใช้ Divider กั้นสินค้าที่คล้ายกัน หรือใช้สติ๊กเกอร์สีแปะแยก (Color Coding) ที่ชั้นวาง</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="mr-2 text-indigo-600">📌</span>
+                                        <span><strong>ล็อคฟังก์ชัน POS:</strong> แจ้งเตือนเมื่อคูณจำนวนสินค้ามากๆ ให้ยืนยันว่าเป็น SKU เดียวกันจริง และบังคับใช้ปืนสแกน</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- DATA STATE ---
+        const reportData = {
+            summary: {
+                match: 414,
+                shortage: 40,
+                overage: 29
+            },
+            financials: {
+                shortageValue: 5789.06,
+                overageValue: 4553.77
+            },
+            crossScanningPairs: [
+                {
+                    category: "กลุ่มท่อพีวีซี",
+                    item1: { id: "P0-3402", name: "ท่อพีวีซีสีขาว 3/8\"", var: "+25", status: "เกิน", color: "text-amber-600", bg: "bg-amber-100" },
+                    item2: { id: "P0-3403", name: "ท่อพีวีซีสีขาว 1/2\"", var: "-25", status: "ขาด", color: "text-rose-600", bg: "bg-rose-100" }
+                },
+                {
+                    category: "กลุ่มสีสเปรย์ RedFox",
+                    item1: { id: "H0-0001", name: "สีสเปรย์ ดำด้าน", var: "-10", status: "ขาด", color: "text-rose-600", bg: "bg-rose-100" },
+                    item2: { id: "H0-0001-01", name: "สีสเปรย์ ดำเงา", var: "+14", status: "เกิน", color: "text-amber-600", bg: "bg-amber-100" }
+                },
+                {
+                    category: "กลุ่มเคมีภัณฑ์ 3DI",
+                    item1: { id: "B6-5010", name: "อะคริลิค 3DI (แดง)", var: "-23", status: "ขาด", color: "text-rose-600", bg: "bg-rose-100" },
+                    item2: { id: "B6-5011-01", name: "ซิลิโคน 3DI (เขียว)", var: "+18", status: "เกิน", color: "text-amber-600", bg: "bg-amber-100" }
+                }
+            ],
+            fractionalItems: [
+                { id: "B4-0001", name: "ผ้าฟาง 1.80cm x 27.3m", sys: "335.2 ม.", count: "327.6 ม.", diff: "-7.6 ม." },
+                { id: "B9-1014", name: "ปอกคาน 15\"x35\"", sys: "22 กก.", count: "21.8 กก.", diff: "-0.2 กก." }
+            ]
+        };
+
+        // --- DOM MANIPULATION & INTERACTION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Tab Navigation Logic
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active from all
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active to clicked
+                    btn.classList.add('active');
+                    const targetId = btn.getAttribute('data-tab');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // 2. Render Cross-Scanning Pairs
+            const pairContainer = document.getElementById('crossScanContainer');
+            reportData.crossScanningPairs.forEach(pair => {
+                const cardHtml = `
+                    <div class="bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                        <div class="bg-slate-50 border-b border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 text-center">
+                            ${pair.category}
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div class="flex justify-between items-center p-3 rounded-lg ${pair.item1.bg} bg-opacity-50">
+                                <div>
+                                    <p class="text-xs text-slate-500 font-mono">${pair.item1.id}</p>
+                                    <p class="text-sm font-medium text-slate-800">${pair.item1.name}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold ${pair.item1.color}">${pair.item1.var}</p>
+                                    <p class="text-xs text-slate-500">${pair.item1.status}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-center -my-3 relative z-10">
+                                <span class="bg-white border border-slate-200 rounded-full p-1 text-xs">↔️ สลับกัน</span>
+                            </div>
+
+                            <div class="flex justify-between items-center p-3 rounded-lg ${pair.item2.bg} bg-opacity-50">
+                                <div>
+                                    <p class="text-xs text-slate-500 font-mono">${pair.item2.id}</p>
+                                    <p class="text-sm font-medium text-slate-800">${pair.item2.name}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold ${pair.item2.color}">${pair.item2.var}</p>
+                                    <p class="text-xs text-slate-500">${pair.item2.status}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                pairContainer.innerHTML += cardHtml;
+            });
+
+            // 3. Render Fractional Table
+            const fracBody = document.getElementById('fractionalTableBody');
+            reportData.fractionalItems.forEach(item => {
+                const trHtml = `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                        <td class="p-3 font-mono text-sm text-slate-500">${item.id}</td>
+                        <td class="p-3 font-medium text-slate-800">${item.name}</td>
+                        <td class="p-3 text-center text-slate-600">${item.sys}</td>
+                        <td class="p-3 text-center text-slate-600">${item.count}</td>
+                        <td class="p-3 text-right font-bold text-rose-600">${item.diff}</td>
+                    </tr>
+                `;
+                fracBody.innerHTML += trHtml;
+            });
+
+            // 4. Initialize Chart.js
+            Chart.defaults.font.family = "'Sarabun', sans-serif";
+            Chart.defaults.color = '#64748b';
+
+            // Pie Chart
+            const ctxPie = document.getElementById('accuracyPieChart').getContext('2d');
+            new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: ['รายการที่ตรง', 'สต๊อกขาด', 'สต๊อกเกิน'],
+                    datasets: [{
+                        data: [reportData.summary.match, reportData.summary.shortage, reportData.summary.overage],
+                        backgroundColor: ['#10b981', '#f43f5e', '#f59e0b'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // CRITICAL for chart container limits
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw} SKU`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+
+            // Bar Chart
+            const ctxBar = document.getElementById('valueBarChart').getContext('2d');
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['มูลค่าผลกระทบ (บาท)'],
+                    datasets: [
+                        {
+                            label: 'มูลค่าสต๊อกขาด',
+                            data: [reportData.financials.shortageValue],
+                            backgroundColor: '#f43f5e',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'มูลค่าสต๊อกเกิน',
+                            data: [reportData.financials.overageValue],
+                            backgroundColor: '#f59e0b',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // CRITICAL for chart container limits
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' },
+                            ticks: {
+                                callback: function(value) {
+                                    return '฿' + value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ฿${context.raw.toLocaleString()}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>

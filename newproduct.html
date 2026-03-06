@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard ยอดขาย ก.พ. 2026 - บจก. พัฒนาสิน ไทยเทรดดิ้ง</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Sarabun', 'sans-serif'],
+                        heading: ['Prompt', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f8fafc; }
+        h1, h2, h3, h4, .font-heading { font-family: 'Prompt', sans-serif; }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Top Navigation -->
+    <nav class="bg-brand-900 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-chart-pie text-2xl text-blue-300"></i>
+                    <div>
+                        <h1 class="text-xl font-heading font-semibold leading-tight">ระบบรายงานยอดขายสินค้าใหม่ 2026</h1>
+                        <p class="text-xs text-blue-200 font-sans">บจก. พัฒนาสิน ไทยเทรดดิ้ง (สาขาอุดรธานี & หนองคาย)</p>
+                    </div>
+                </div>
+                <div class="text-sm bg-brand-600 px-4 py-2 rounded-lg border border-brand-500">
+                    <i class="fa-regular fa-calendar mr-2"></i> ข้อมูลประจำเดือน: <b>กุมภาพันธ์ 2569</b>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Header Section -->
+        <div class="mb-8 flex flex-col md:flex-row justify-between items-end gap-4">
+            <div>
+                <h2 class="text-2xl font-heading font-bold text-slate-800">ภาพรวมผลการดำเนินงาน (Executive Dashboard)</h2>
+                <p class="text-slate-500 mt-1">เปรียบเทียบผลงานระหว่าง มกราคม - กุมภาพันธ์ และวิเคราะห์ผลกระทบจากการรวมสาขาหนองคาย</p>
+            </div>
+            <div class="flex gap-2">
+                <button class="bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-slate-50 transition">
+                    <i class="fa-solid fa-download mr-2"></i> Export Report
+                </button>
+            </div>
+        </div>
+
+        <!-- KPI Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Card 1: Feb Sales -->
+            <div class="card p-6 border-t-4 border-t-brand-500 relative overflow-hidden">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 mb-1">ยอดขายจริง ก.พ. 2569</p>
+                        <h3 class="text-3xl font-bold text-slate-900">26,596 <span class="text-lg text-slate-500 font-normal">฿</span></h3>
+                    </div>
+                    <div class="bg-brand-50 p-3 rounded-lg text-brand-600">
+                        <i class="fa-solid fa-coins text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-emerald-600 font-bold flex items-center bg-emerald-50 px-2 py-1 rounded">
+                        <i class="fa-solid fa-arrow-trend-up mr-1"></i> +803%
+                    </span>
+                    <span class="text-slate-400 ml-2">เทียบกับเดือน ม.ค. (2,943 ฿)</span>
+                </div>
+            </div>
+
+            <!-- Card 2: YTD Sales -->
+            <div class="card p-6 border-t-4 border-t-emerald-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 mb-1">ยอดขายสะสม (YTD)</p>
+                        <h3 class="text-3xl font-bold text-slate-900">29,539 <span class="text-lg text-slate-500 font-normal">฿</span></h3>
+                    </div>
+                    <div class="bg-emerald-50 p-3 rounded-lg text-emerald-600">
+                        <i class="fa-solid fa-chart-line text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 w-full bg-slate-100 rounded-full h-2">
+                    <div class="bg-emerald-500 h-2 rounded-full" style="width: 2.46%"></div>
+                </div>
+                <p class="text-xs text-slate-500 mt-2">คิดเป็น 2.46% ของเป้าหมาย YTD (1.2M)</p>
+            </div>
+
+            <!-- Card 3: Target Gap -->
+            <div class="card p-6 border-t-4 border-t-rose-500">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 mb-1">ส่วนต่างเป้าหมายรายเดือน</p>
+                        <h3 class="text-3xl font-bold text-rose-600">-573,403 <span class="text-lg text-rose-400 font-normal">฿</span></h3>
+                    </div>
+                    <div class="bg-rose-50 p-3 rounded-lg text-rose-600">
+                        <i class="fa-solid fa-bullseye text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-rose-600 font-medium">เป้าหมาย: 600,000 ฿ / เดือน</span>
+                </div>
+            </div>
+
+            <!-- Card 4: Nong Khai Impact -->
+            <div class="card p-6 border-t-4 border-t-amber-500 bg-amber-50/30">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-medium text-slate-500 mb-1">สัดส่วนยอดขายหนองคาย</p>
+                        <h3 class="text-3xl font-bold text-amber-600">25.7%</h3>
+                    </div>
+                    <div class="bg-amber-100 p-3 rounded-lg text-amber-600">
+                        <i class="fa-solid fa-shop text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-sm">
+                    <span class="text-amber-700">ยอดขาย 6,835 ฿ มาจากสาขาใหม่</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Chart 1: MoM Comparison -->
+            <div class="card p-6">
+                <h3 class="font-heading font-semibold text-lg text-slate-800 mb-4">เปรียบเทียบยอดขาย ม.ค. vs ก.พ. (Growth Analysis)</h3>
+                <div class="relative h-72">
+                    <canvas id="momChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Branch Breakdown -->
+            <div class="card p-6">
+                <h3 class="font-heading font-semibold text-lg text-slate-800 mb-4">สัดส่วนยอดขายแยกตามสาขา (ก.พ. 2569)</h3>
+                <div class="relative h-72 flex justify-center">
+                    <canvas id="branchChart"></canvas>
+                </div>
+                <div class="mt-4 text-center text-sm text-slate-600 bg-slate-50 p-3 rounded-lg">
+                    <i class="fa-solid fa-lightbulb text-amber-500 mr-2"></i>
+                    <b>Insight:</b> สาขาอุดรธานีกลับมาเป็นตัวหลัก (74.3%) ขณะที่หนองคายเข้ามาช่วยเสริมยอด (25.7%)
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis & Action Plan Section -->
+        <div class="card p-6 border-l-4 border-l-rose-500 mb-8 bg-white">
+            <div class="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
+                <div class="bg-rose-100 text-rose-600 p-3 rounded-full flex-shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-heading font-bold text-xl text-slate-800">วิเคราะห์สาเหตุที่ยอดขายไม่ถึงเป้าหมาย (Gap Analysis)</h3>
+                    <p class="text-sm text-slate-500">วิเคราะห์ส่วนต่าง <span class="text-rose-600 font-bold">-573,403 บาท</span> และแนวทางแก้ไขเพื่อบรรลุเป้าหมายในระยะถัดไป</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Causes -->
+                <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-sm">
+                    <h4 class="font-heading font-semibold text-rose-700 mb-4 flex items-center text-lg">
+                        <i class="fa-solid fa-magnifying-glass-chart mr-2"></i> สาเหตุหลัก (Root Causes)
+                    </h4>
+                    <ul class="space-y-4 text-sm text-slate-700">
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-xmark text-rose-500 mt-1 mr-3 text-base"></i>
+                            <div><b class="text-slate-900">การตั้งเป้าหมายไม่สอดคล้องกับมูลค่าสินค้า (Product Value):</b> สินค้าใหม่ส่วนใหญ่เป็นกลุ่มราคาต่ำ (เช่น ปากกา 10 บาท, ข้อต่อพลาสติกหลักสิบ) การจะไปถึงเป้าหมาย 600,000 บาท ต้องอาศัย Volume ที่สูงระดับหลายหมื่นชิ้น ซึ่งยากในระยะเริ่มต้น</div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-xmark text-rose-500 mt-1 mr-3 text-base"></i>
+                            <div><b class="text-slate-900">สัดส่วนการขายปลีกยังสูงเกินไป:</b> ยอดขายฝั่งสาขาหลัก (อุดรธานี) ยังคงพึ่งพาการขายปลีกหน้าร้าน ทำให้ Ticket Size หรือยอดซื้อเฉลี่ยต่อบิลค่อนข้างต่ำ ไม่พอที่จะปิด Gap หลักแสนได้</div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-xmark text-rose-500 mt-1 mr-3 text-base"></i>
+                            <div><b class="text-slate-900">ขาดสินค้ากลุ่ม High-Ticket ในพอร์ต:</b> ยังไม่มีรายการสินค้าหลักพันหรือหลักหมื่น (เช่น เครื่องมือช่างเฉพาะทาง, อุปกรณ์เหมาโครงการ) ที่จะช่วยเป็นตัวดึงยอดขายให้เติบโตแบบก้าวกระโดดได้ทันที</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Solutions -->
+                <div class="bg-emerald-50/50 p-5 rounded-xl border border-emerald-100 shadow-sm">
+                    <h4 class="font-heading font-semibold text-emerald-700 mb-4 flex items-center text-lg">
+                        <i class="fa-solid fa-wrench mr-2"></i> แนวทางแก้ไข (Action Plan)
+                    </h4>
+                    <ul class="space-y-4 text-sm text-slate-700">
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-emerald-500 mt-1 mr-3 text-base"></i>
+                            <div><b class="text-slate-900">รุกตลาด B2B (Direct Sales):</b> จัดทำโปรแกรมราคาขายส่ง (Tier Pricing) หรือยกลัง และมอบหมายทีมเซลส์ลงพื้นที่เจาะกลุ่มผู้รับเหมาก่อสร้างและโครงการ ในพื้นที่อุดรฯ-หนองคายโดยตรง</div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-emerald-500 mt-1 mr-3 text-base"></i>
+                            <div><b class="text-slate-900">ปรับพอร์ตฟอลิโอสินค้า (Product Mix Upgrade):</b> พิจารณาเร่งนำเข้าสินค้าใหม่ที่มีมูลค่าสูง (High Margin / High Ticket) เข้ามาผสมในกลุ่มสินค้าใหม่ เพื่อดันยอดเฉลี่ยต่อบิลให้สูงขึ้น</div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-emerald-500 mt-1 mr-3 text-base"></i>
+                            <div><b class="text-slate-900">จัดโปรโมชั่นแบบแพ็คคู่ (Bundle):</b> นำสินค้าหมวดอุปกรณ์ไฟฟ้าที่ขายดี (เช่น ขั้วหลอดไฟ) มาจัดโปรโมชั่นขายคู่กับกลุ่มประปา หรือเครื่องเขียน เพื่อบังคับการอัพเซลส์ (Up-Selling) หน้าร้าน</div>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa-solid fa-check text-emerald-500 mt-1 mr-3 text-base"></i>
+                            <div><b class="text-slate-900">ปรับเป้าหมายระยะสั้น (Re-forecasting):</b> อาจพิจารณาตั้งเป้าหมายย่อยระยะสั้นที่อิงตามความเป็นจริงของราคาสินค้า (เช่น 50,000 - 100,000 บาท/เดือน) เพื่อกระตุ้นให้ทีมขายเห็นความเป็นไปได้และสร้างขวัญกำลังใจ</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table Section -->
+        <div class="card p-0 overflow-hidden">
+            <div class="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                <h3 class="font-heading font-semibold text-lg text-slate-800">วิเคราะห์รายการสินค้าขายดี (รวม 2 สาขา) ประจำเดือน ก.พ.</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-600 text-sm font-heading">
+                            <th class="px-6 py-4 font-semibold border-b">รหัสสินค้า</th>
+                            <th class="px-6 py-4 font-semibold border-b">ชื่อสินค้า</th>
+                            <th class="px-6 py-4 font-semibold border-b text-right">ยอดขายรวม (บาท)</th>
+                            <th class="px-6 py-4 font-semibold border-b text-center">สัดส่วนจากหนองคาย</th>
+                            <th class="px-6 py-4 font-semibold border-b text-center">แนวโน้ม</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-slate-200">
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 font-mono text-slate-500">D4-0324-01</td>
+                            <td class="px-6 py-4 font-medium text-slate-800">ขั้วหลอด มีสวิตซ์พร้อมสาย 5 เมตร BEWON</td>
+                            <td class="px-6 py-4 text-right font-bold text-brand-600">12,450.00</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full text-xs font-medium">30%</span>
+                            </td>
+                            <td class="px-6 py-4 text-center text-emerald-500"><i class="fa-solid fa-arrow-up"></i></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 font-mono text-slate-500">P1-1303</td>
+                            <td class="px-6 py-4 font-medium text-slate-800">ข้องอเกลียวนอกทองเหลือง 1/2" (H3)</td>
+                            <td class="px-6 py-4 text-right font-bold text-brand-600">8,200.00</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full text-xs font-medium">20%</span>
+                            </td>
+                            <td class="px-6 py-4 text-center text-emerald-500"><i class="fa-solid fa-arrow-up"></i></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 font-mono text-slate-500">O2-0301-xx</td>
+                            <td class="px-6 py-4 font-medium text-slate-800">ปากกาสีน้ำ H-110 (รวมทุกสี)</td>
+                            <td class="px-6 py-4 text-right font-bold text-brand-600">4,150.60</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-slate-100 text-slate-600 px-2 py-1 rounded-full text-xs font-medium">10%</span>
+                            </td>
+                            <td class="px-6 py-4 text-center text-slate-400"><i class="fa-solid fa-minus"></i></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 font-mono text-slate-500">P1-1305</td>
+                            <td class="px-6 py-4 font-medium text-slate-800">สามทางเกลียวนอกทองเหลือง PVC 1/2"</td>
+                            <td class="px-6 py-4 text-right font-bold text-brand-600">1,796.00</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full text-xs font-medium">60%</span>
+                            </td>
+                            <td class="px-6 py-4 text-center text-emerald-500"><i class="fa-solid fa-arrow-up"></i></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-brand-50">
+                            <td colspan="2" class="px-6 py-4 text-right font-heading font-bold text-brand-900">ยอดรวมทั้งหมด (ก.พ. 2569)</td>
+                            <td class="px-6 py-4 text-right font-bold text-brand-900 text-lg">26,596.60</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Chart.js Initialization -->
+    <script>
+        // Chart 1: Bar Chart (MoM Comparison)
+        const ctxMom = document.getElementById('momChart').getContext('2d');
+        new Chart(ctxMom, {
+            type: 'bar',
+            data: {
+                labels: ['มกราคม (เฉพาะอุดรฯ)', 'กุมภาพันธ์ (อุดรฯ + หนองคาย)'],
+                datasets: [{
+                    label: 'ยอดขาย (บาท)',
+                    data: [2943, 26596],
+                    backgroundColor: [
+                        'rgba(148, 163, 184, 0.7)', // Slate for Jan
+                        'rgba(37, 99, 235, 0.9)'    // Brand Blue for Feb
+                    ],
+                    borderColor: [
+                        'rgba(148, 163, 184, 1)',
+                        'rgba(37, 99, 235, 1)'
+                    ],
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [2, 4], color: '#e2e8f0' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: Doughnut Chart (Branch Breakdown)
+        const ctxBranch = document.getElementById('branchChart').getContext('2d');
+        new Chart(ctxBranch, {
+            type: 'doughnut',
+            data: {
+                labels: ['สาขาหนองคาย', 'สาขาอุดรธานี (พัฒนาสิน ไทยเทรดดิ้ง)'],
+                datasets: [{
+                    data: [6835, 19761.6],
+                    backgroundColor: [
+                        '#f59e0b', // Amber for Nong Khai
+                        '#3b82f6'  // Blue for Udon
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { font: { family: "'Prompt', sans-serif" } }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.parsed || 0;
+                                let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                let percentage = Math.round((value / total) * 100) + '%';
+                                return ` ${label}: ${new Intl.NumberFormat('th-TH').format(value)} ฿ (${percentage})`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

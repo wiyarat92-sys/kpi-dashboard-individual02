@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard รายงานลูกหนี้ค้างชำระ</title>
+    <!-- Tailwind CSS สำหรับจัด Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- เพิ่ม Icon Library สำหรับความทันสมัย -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Prompt', sans-serif; background-color: #f8fafc; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+        <!-- Navigation / Back Button -->
+        <div>
+            <a href="file:///D:/KPIs/Management%20File%202026/%E0%B8%99%E0%B8%B3%E0%B9%80%E0%B8%AA%E0%B8%99%E0%B8%AD%E0%B8%AA%E0%B8%A3%E0%B8%B8%E0%B8%9B%20KPI/%E0%B8%81%E0%B8%B8%E0%B8%A1%E0%B8%A0%E0%B8%B2%E0%B8%9E%E0%B8%B1%E0%B8%99%E0%B8%98%E0%B9%8C/Kpis%20%E0%B8%A3%E0%B8%B2%E0%B8%A2%E0%B8%9A%E0%B8%B8%E0%B8%84%E0%B8%84%E0%B8%A5/debtTracking.html" class="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-100 hover:bg-blue-50">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                ย้อนกลับไปหน้า การติดตามการชำระหนี้
+            </a>
+        </div>
+
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
+                    <i data-lucide="file-warning" class="text-red-500 w-8 h-8"></i>
+                    รายงานลูกหนี้ค้างชำระ
+                </h1>
+                <p class="text-gray-500 mt-2 flex items-center gap-2 text-sm md:text-base">
+                    <i data-lucide="calendar" class="w-4 h-4"></i> ประจำเดือนกุมภาพันธ์ 2569 (10 อันดับแรกที่เกินกำหนด)
+                </p>
+            </div>
+            <div class="bg-red-50 px-6 py-4 rounded-xl border border-red-100 w-full md:w-auto text-left md:text-right">
+                <p class="text-sm text-red-600 font-medium mb-1">ยอดหนี้ค้างชำระรวม (10 ลำดับ)</p>
+                <p class="text-3xl font-bold text-red-600 tracking-tight" id="totalAmount">฿0.00</p>
+            </div>
+        </div>
+
+        <!-- Analysis & Recommendations Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- บทวิเคราะห์ -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-3 mb-6 border-b border-gray-50 pb-4">
+                    <div class="bg-blue-100 p-2.5 rounded-xl">
+                        <i data-lucide="bar-chart-2" class="text-blue-600 w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">บทวิเคราะห์สถานการณ์</h2>
+                </div>
+                <ul class="space-y-5 flex-grow text-gray-600 text-sm md:text-base leading-relaxed">
+                    <li class="flex items-start gap-4">
+                        <div class="bg-blue-50 text-blue-500 rounded-full p-1.5 flex-shrink-0 mt-0.5">
+                            <i data-lucide="info" class="w-4 h-4"></i>
+                        </div>
+                        <div><strong class="text-gray-800">กระจุกตัวของหนี้เสียระยะสั้น:</strong> ลูกหนี้ส่วนใหญ่เพิ่งเริ่มค้างชำระ (5-14 วัน) ซึ่งถือเป็นช่วง "Golden Period" ที่หากทีมงานติดตามทวงถามทันที จะมีโอกาสได้รับเงินคืนสูงมาก</div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="bg-orange-50 text-orange-500 rounded-full p-1.5 flex-shrink-0 mt-0.5">
+                            <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                        </div>
+                        <div><strong class="text-gray-800">ลูกหนี้รายใหญ่กระทบสภาพคล่อง:</strong> หจก. นำชัยวัสดุ 2024 (40,222 บ.) และ หจก. จิตเจริญค้าไม้ (27,734 บ.) เป็นบัญชีมูลค่าสูงที่เลยกำหนดชำระมาแล้วประมาณ 1 สัปดาห์ จึงจำเป็นต้องให้ความสำคัญเป็นพิเศษ</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- ข้อเสนอแนะ -->
+            <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 flex flex-col h-full hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-3 mb-6 border-b border-gray-50 pb-4">
+                    <div class="bg-emerald-100 p-2.5 rounded-xl">
+                        <i data-lucide="lightbulb" class="text-emerald-600 w-6 h-6"></i>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800">ข้อเสนอแนะ (Action Plan)</h2>
+                </div>
+                <ul class="space-y-5 flex-grow text-gray-600 text-sm md:text-base leading-relaxed">
+                    <li class="flex items-start gap-4">
+                        <div class="bg-emerald-50 text-emerald-600 rounded-full w-7 h-7 flex items-center justify-center font-bold mt-0.5 flex-shrink-0 border border-emerald-100">1</div>
+                        <div><strong class="text-gray-800">Call Priority:</strong> มอบหมายทีมงานให้เร่งโทรติดต่อลูกหนี้ 3 อันดับแรกที่มียอดค้างชำระสูงสุดในทันที</div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="bg-emerald-50 text-emerald-600 rounded-full w-7 h-7 flex items-center justify-center font-bold mt-0.5 flex-shrink-0 border border-emerald-100">2</div>
+                        <div><strong class="text-gray-800">Proactive Reminder:</strong> สร้างระบบส่ง SMS หรืออีเมลแจ้งเตือนลูกค้าล่วงหน้า 3 วัน และ 1 วัน ก่อนถึงวันครบกำหนด เพื่อป้องกันการลืมชำระ</div>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <div class="bg-emerald-50 text-emerald-600 rounded-full w-7 h-7 flex items-center justify-center font-bold mt-0.5 flex-shrink-0 border border-emerald-100">3</div>
+                        <div><strong class="text-gray-800">Credit Review:</strong> พิจารณาระงับการเปิดบิลใหม่ หรือปรับลดวงเงินเครดิตชั่วคราว สำหรับลูกค้าที่ค้างชำระนานเกิน 14 วัน</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-6 border-b border-gray-50 flex justify-between items-center bg-white">
+                <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    <i data-lucide="users" class="w-5 h-5 text-gray-400"></i> รายชื่อลูกหนี้เรียงตามวันที่ครบชำระ
+                </h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead>
+                        <tr class="bg-gray-50/50 text-gray-500 text-xs uppercase tracking-wider">
+                            <th class="p-4 font-semibold text-center w-16">ลำดับ</th>
+                            <th class="p-4 font-semibold">วันที่ออกบิล</th>
+                            <th class="p-4 font-semibold text-blue-600">วันที่ครบชำระ</th>
+                            <th class="p-4 font-semibold">ชื่อลูกหนี้</th>
+                            <th class="p-4 font-semibold text-right">ยอดคงเหลือ</th>
+                            <th class="p-4 font-semibold text-center">สถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="text-sm divide-y divide-gray-50">
+                        <!-- Data will be inserted here by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ข้อมูลดิบจากรูปภาพ
+        const arData = [
+            { id: 1, invoiceDate: "26/12/2568", dueDate: "25/01/2569", name: "ห้างหุ้นส่วนจำกัด มีคุณ โลจิสติกส์ 2020", balance: 15948.35, overdueDays: 8 },
+            { id: 2, invoiceDate: "3/1/2569", dueDate: "02/02/2569", name: "ร้านสมัยการช่าง", balance: 23529.00, overdueDays: 5 },
+            { id: 3, invoiceDate: "5/1/2569", dueDate: "04/02/2569", name: "บริษัท คลังอุปกรณ์ จำกัด", balance: 17205.61, overdueDays: 6 },
+            { id: 4, invoiceDate: "7/1/2569", dueDate: "06/02/2569", name: "ห้างหุ้นส่วนจำกัด นำชัยวัสดุ 2024", balance: 40222.00, overdueDays: 7 },
+            { id: 5, invoiceDate: "7/1/2569", dueDate: "06/02/2569", name: "ร้านสุริยาเคหะภัณฑ์", balance: 3658.00, overdueDays: 5 },
+            { id: 6, invoiceDate: "8/1/2569", dueDate: "07/02/2569", name: "บริษัท ก เกษตร (2012) จำกัด", balance: 13591.00, overdueDays: 5 },
+            { id: 7, invoiceDate: "9/1/2569", dueDate: "08/02/2569", name: "ห้างหุ้นส่วนจำกัด ปกาศิต ฮาร์ดแวร์", balance: 2614.00, overdueDays: 6 },
+            { id: 8, invoiceDate: "10/1/2569", dueDate: "09/02/2569", name: "ห้างหุ้นส่วนจำกัด จิตเจริญค้าไม้", balance: 27734.00, overdueDays: 11 },
+            { id: 9, invoiceDate: "13/1/2569", dueDate: "12/02/2569", name: "ร้านวรรณเจริญโลหะ", balance: 6899.00, overdueDays: 14 },
+            { id: 10, invoiceDate: "13/1/2569", dueDate: "12/02/2569", name: "ร้าน ต.การเกษตร", balance: 20271.00, overdueDays: 5 }
+        ];
+
+        // Format number to currency
+        const formatMoney = (amount) => {
+            return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(amount);
+        };
+
+        // Calculate Total
+        const totalBal = arData.reduce((sum, item) => sum + item.balance, 0);
+        document.getElementById('totalAmount').innerText = formatMoney(totalBal);
+
+        // Render Table
+        const tableBody = document.getElementById('tableBody');
+        let tableHTML = '';
+        arData.forEach((item, index) => {
+            // ปรับสีสถานะตามจำนวนวันที่เกินกำหนดให้ชัดเจนขึ้น
+            let badgeClass = "bg-red-50 text-red-600 border-red-200";
+            let iconName = "alert-circle";
+            
+            if (item.overdueDays >= 10) {
+                badgeClass = "bg-rose-100 text-rose-700 border-rose-300 font-bold";
+                iconName = "alert-triangle";
+            } else if (item.overdueDays <= 5) {
+                badgeClass = "bg-orange-50 text-orange-600 border-orange-200";
+            }
+
+            tableHTML += `
+                <tr class="hover:bg-gray-50/80 transition-colors group">
+                    <td class="p-4 text-center text-gray-400 font-medium group-hover:text-gray-600">${index + 1}</td>
+                    <td class="p-4 text-gray-600">${item.invoiceDate}</td>
+                    <td class="p-4 font-semibold text-blue-600 bg-blue-50/30">${item.dueDate}</td>
+                    <td class="p-4 font-medium text-gray-800">${item.name}</td>
+                    <td class="p-4 text-right font-bold text-gray-700">
+                        ฿${item.balance.toLocaleString('th-TH', {minimumFractionDigits: 2})}
+                    </td>
+                    <td class="p-4 text-center">
+                        <div class="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full text-xs border ${badgeClass}">
+                            <i data-lucide="${iconName}" class="w-3.5 h-3.5"></i>
+                            เกินกำหนด ${item.overdueDays} วัน
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        tableBody.innerHTML = tableHTML;
+
+        // เรียกใช้งาน Lucide Icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

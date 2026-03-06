@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard วิเคราะห์สต๊อกโกดัง (Warehouse) - กุมภาพันธ์ 2026</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Chosen Palette: Warm Neutrals with Status Indicators (Slate-50 for calm background, Indigo-600 for primary elements, Amber-500/Sky-500 to differentiate Construction vs PVC categories). -->
+    <!-- Application Structure Plan: A 3-Tab Interactive Dashboard tailored for Warehouse Operations.
+         - Tab 1: "Overview" Compares the two major categories (Construction vs PVC Pipes) side-by-side to highlight that PVC is the more problematic category (63% vs 43% accuracy).
+         - Tab 2: "Deep Dive" Exposes the "Brand/Model Confusion" issue (e.g., mixing up pipe brands) through contextual insights and a combined, filterable data table for both categories.
+         - Tab 3: "Action Plan" Adapts the root causes and recommendations specifically for warehouse environment (Receiving, Put-away, Picking processes) unlike the POS-focused storefront dashboard. -->
+    <!-- Visualization & Content Choices: 
+         - Goal: Compare Categories -> Stacked Bar Chart (Matched vs Mismatched SKUs per category) & Doughnut Chart (Financial impact). 
+         - Goal: Organize & Interact -> Filterable HTML Table (JS logic) allowing users to view issues by specific warehouse category (Construction or PVC).
+         - Goal: Present Text -> Grid-based cards with Unicode icons for Warehouse-specific Root Causes (Picking, Bin location errors) and Recommendations.
+         - Confirming NO SVG or Mermaid JS used. All visual assets are native Canvas or HTML/Unicode. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; color: #334155; }
+        
+        /* Strict Chart Container Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container { height: 300px; max-height: 300px; }
+        }
+
+        /* Tab Transitions */
+        .tab-content { display: none; animation: fadeIn 0.4s ease-out forwards; opacity: 0; }
+        .tab-content.active { display: block; }
+        
+        .tab-btn { transition: all 0.2s ease; border-bottom: 3px solid transparent; }
+        .tab-btn.active { 
+            border-bottom-color: #3b82f6; 
+            color: #3b82f6; 
+            font-weight: 700; 
+            background-color: #eff6ff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Scrollbar for tables */
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-slate-800">🏭 สรุปการตรวจนับสินค้าคงคลัง (คลังสินค้า/โกดัง)</h1>
+                    <p class="text-sm md:text-base text-slate-500 mt-1">บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด | 📅 ประจำเดือน: กุมภาพันธ์ 2026</p>
+                    <div class="mt-2 flex gap-2">
+                        <span class="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-md font-medium border border-amber-200">หมวดหมู่: วัสดุก่อสร้าง</span>
+                        <span class="bg-sky-100 text-sky-800 text-xs px-2 py-1 rounded-md font-medium border border-sky-200">หมวดหมู่: ท่อพีวีซี</span>
+                    </div>
+                </div>
+                <div class="bg-slate-50 border border-slate-200 px-5 py-3 rounded-xl text-center shadow-sm w-full md:w-auto">
+                    <p class="text-xs text-slate-600 font-bold uppercase tracking-wider mb-1">ความแม่นยำรวม (Overall)</p>
+                    <div class="flex items-baseline justify-center gap-2">
+                        <p class="text-3xl font-extrabold text-slate-800">53%</p>
+                        <p class="text-sm text-slate-500">/ 258 SKUs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto custom-scrollbar border-t border-slate-100 mt-2">
+            <button class="tab-btn active px-5 py-3 text-slate-600 hover:text-blue-600 focus:outline-none whitespace-nowrap text-sm md:text-base" data-tab="overview">
+                📊 1. ภาพรวมและเปรียบเทียบหมวดหมู่
+            </button>
+            <button class="tab-btn px-5 py-3 text-slate-600 hover:text-blue-600 focus:outline-none whitespace-nowrap text-sm md:text-base" data-tab="deepdive">
+                🔍 2. วิเคราะห์ข้อมูลเชิงลึก
+            </button>
+            <button class="tab-btn px-5 py-3 text-slate-600 hover:text-blue-600 focus:outline-none whitespace-nowrap text-sm md:text-base" data-tab="actionplan">
+                💡 3. แผนแก้ไขกระบวนการคลังสินค้า
+            </button>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- ================= TAB 1: OVERVIEW ================= -->
+        <section id="overview" class="tab-content active">
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-3 border-l-4 border-blue-500 pl-3">ผลการตรวจนับแยกตามหมวดหมู่ (Category Performance)</h2>
+                <p class="text-slate-600 text-base leading-relaxed bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    หน้าต่างนี้เปรียบเทียบประสิทธิภาพการจัดการสต๊อกระหว่างสองหมวดหมู่หลักในโกดัง พบว่าสถานการณ์ปัจจุบันมีความน่ากังวลอย่างมาก โดยเฉพาะ <strong>หมวดหมู่ตัววัสดุก่อสร้างที่มีความแม่นยำลดลงเหลือเพียง 43%</strong> ในขณะที่หมวดหมู่ท่อพีวีซีมีความแม่นยำอยู่ที่ 63% ซึ่งทั้งสองส่วนยังห่างไกลจากมาตรฐานความปลอดภัยของคลังสินค้า
+                </p>
+            </div>
+
+            <!-- KPI Cards Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                
+                <!-- Construction Materials Card -->
+                <div class="bg-white rounded-xl border border-amber-200 shadow-sm overflow-hidden relative">
+                    <div class="bg-amber-50 px-5 py-3 border-b border-amber-100 flex justify-between items-center">
+                        <h3 class="font-bold text-amber-800 flex items-center gap-2"><span>🧱</span> หมวดหมู่ วัสดุก่อสร้าง</h3>
+                        <span class="bg-rose-100 text-rose-700 text-xs px-2 py-1 rounded font-bold border border-rose-200">ความแม่นยำ 43% (วิกฤต)</span>
+                    </div>
+                    <div class="p-5 grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <p class="text-xs text-slate-500 font-medium mb-1">นับทั้งหมด</p>
+                            <p class="text-xl font-bold text-slate-800">122 <span class="text-xs font-normal text-slate-500">SKUs</span></p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-medium mb-1">ส่วนต่างสุทธิ</p>
+                            <p class="text-xl font-bold text-rose-600">70 <span class="text-xs font-normal text-slate-500">SKUs</span></p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-medium mb-1">มูลค่าสุทธิ</p>
+                            <p class="text-xl font-bold text-rose-600">฿12.2k</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PVC Pipes Card -->
+                <div class="bg-white rounded-xl border border-sky-200 shadow-sm overflow-hidden relative">
+                    <div class="bg-sky-50 px-5 py-3 border-b border-sky-100 flex justify-between items-center">
+                        <h3 class="font-bold text-sky-800 flex items-center gap-2"><span>🚰</span> หมวดหมู่ ท่อพีวีซี</h3>
+                        <span class="bg-sky-200 text-sky-900 text-xs px-2 py-1 rounded font-bold">ความแม่นยำ 63%</span>
+                    </div>
+                    <div class="p-5 grid grid-cols-3 gap-4 text-center">
+                        <div>
+                            <p class="text-xs text-slate-500 font-medium mb-1">นับทั้งหมด</p>
+                            <p class="text-xl font-bold text-slate-800">136 <span class="text-xs font-normal text-slate-500">SKUs</span></p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-medium mb-1">ส่วนต่างสุทธิ</p>
+                            <p class="text-xl font-bold text-sky-600">51 <span class="text-xs font-normal text-slate-500">SKUs</span></p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-slate-500 font-medium mb-1">มูลค่าสุทธิ</p>
+                            <p class="text-xl font-bold text-rose-600">฿16.7k</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Charts Area -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Stacked Bar Chart -->
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">เปรียบเทียบรายการสินค้า (SKUs) ขาด/เกิน</h3>
+                    <div class="chart-container">
+                        <canvas id="skuChart"></canvas>
+                    </div>
+                </div>
+                <!-- Doughnut Chart for Value -->
+                <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">สัดส่วนมูลค่าความเสียหาย (รวม ฿29,039)</h3>
+                    <div class="chart-container">
+                        <canvas id="valueDoughnutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: DEEP DIVE ================= -->
+        <section id="deepdive" class="tab-content">
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-3 border-l-4 border-blue-500 pl-3">วิเคราะห์ข้อมูลดิบและรูปแบบความผิดปกติ (Data Anomalies)</h2>
+                <p class="text-slate-600 text-base leading-relaxed bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    จากการวิเคราะห์ข้อมูลรายการระดับ SKU พบปัญหา <strong>"การหยิบสินค้าผิดแบรนด์ / สลับยี่ห้อ (Brand Confusion)"</strong> ในกลุ่มท่อพีวีซีอย่างรุนแรง พนักงานหยิบท่อขนาดเดียวกันแต่คนละยี่ห้อ (เช่น ตราเพชร, Q-PIPE, ตราดาว) สลับกันไปมา และปัญหาในกลุ่มวัสดุก่อสร้างที่ขนาดหรือสีใกล้เคียงกันถูกหยิบสลับกัน
+                </p>
+            </div>
+
+            <!-- Insights Highlight -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-blue-50 border border-blue-200 p-5 rounded-xl">
+                    <h4 class="font-bold text-blue-800 mb-2 flex items-center gap-2"><span>🔄</span> พฤติกรรมสลับยี่ห้อ (Cross-Brand Picking)</h4>
+                    <p class="text-sm text-blue-700">ตัวอย่าง: ท่อ 1/2" ตราดาว สต๊อกเกิน (+49) แต่ ท่อ 1/2" Q-PIPE และ ตราเพชร สต๊อกขาดรวมกัน (-38) บ่งชี้ว่าพนักงานหยิบของคละแบรนด์ตอนจัดส่ง (Picking) แต่ออกเอกสารตัดสต๊อกเพียงแบรนด์เดียว</p>
+                </div>
+                <div class="bg-orange-50 border border-orange-200 p-5 rounded-xl">
+                    <h4 class="font-bold text-orange-800 mb-2 flex items-center gap-2"><span>📏</span> พฤติกรรมสลับรุ่น/ขนาด (Model Mix-up)</h4>
+                    <p class="text-sm text-orange-700">พบในกลุ่มไม้อัดและเกียงโป๊วสี เช่น ไม้อัด 10mm (A) เกิน แต่ 10mm ฟิล์มดำ ขาด หรือ เกียงโป๊ว 1 1/2" ขาด แต่ 3" เกิน เกิดจากการจัดเก็บสินค้า (Put-away) ที่นำของคล้ายกันไปปะปนในพาเลทเดียวกัน</p>
+                </div>
+            </div>
+
+            <!-- Interactive Table Section -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-5 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-50">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2"><span>📋</span> เจาะลึกรายการสินค้าที่มีความคลาดเคลื่อน</h3>
+                    
+                    <!-- Interactive Filter -->
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <label for="categoryFilter" class="text-sm font-medium text-slate-600 whitespace-nowrap">ตัวกรองหมวดหมู่:</label>
+                        <select id="categoryFilter" class="bg-white border border-slate-300 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2 outline-none">
+                            <option value="all">แสดงทั้งหมด</option>
+                            <option value="construction">เฉพาะวัสดุก่อสร้าง</option>
+                            <option value="pvc">เฉพาะท่อพีวีซี</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse whitespace-nowrap">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 text-sm border-b border-slate-200">
+                                <th class="p-4 font-semibold">รหัสสินค้า</th>
+                                <th class="p-4 font-semibold">ชื่อสินค้า</th>
+                                <th class="p-4 font-semibold text-center">ยอดในระบบ</th>
+                                <th class="p-4 font-semibold text-center">นับได้จริง</th>
+                                <th class="p-4 font-semibold text-right">ผลต่าง</th>
+                                <th class="p-4 font-semibold text-center">สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody" class="text-sm">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-3 bg-slate-50 text-center text-xs text-slate-500 border-t border-slate-200" id="tableRecordCount">
+                    แสดงข้อมูลไฮไลท์ตัวอย่าง
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: ACTION PLAN ================= -->
+        <section id="actionplan" class="tab-content">
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-slate-800 mb-3 border-l-4 border-blue-500 pl-3">แผนแก้ไขและปรับปรุงกระบวนการคลังสินค้า</h2>
+                <p class="text-slate-600 text-base leading-relaxed bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                    ปัญหาของคลังสินค้า (โกดัง) แตกต่างจากหน้าร้าน เนื่องจากมีความเกี่ยวข้องกับกระบวนการรับเข้า (Receiving), การจัดเก็บ (Put-away) และ การเบิกจ่าย (Picking) แผนปฏิบัติการด้านล่างจึงมุ่งเน้นไปที่การลดความสับสนของพนักงานในการหยิบสินค้าที่มีลักษณะคล้ายคลึงกัน
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Root Causes -->
+                <div class="lg:col-span-5 space-y-4">
+                    <h3 class="text-lg font-bold text-slate-800 border-b-2 border-slate-200 pb-2 flex items-center gap-2">
+                        <span>🔍</span> จุดบกพร่องของกระบวนการในโกดัง
+                    </h3>
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-5">
+                        <div class="flex gap-4 items-start">
+                            <span class="text-2xl bg-slate-100 p-2 rounded-lg">📦</span> 
+                            <div>
+                                <p class="font-bold text-slate-800 text-base">การจัดเก็บไร้การแบ่งแยก (Poor Slotting)</p>
+                                <p class="text-sm text-slate-600 mt-1">สินค้ายี่ห้อต่างกันแต่ประเภทเดียวกัน (เช่น ท่อ 1/2 นิ้ว ของท่อน้ำไทย, ตราดาว, ตราเพชร) ถูกจัดเก็บไว้ในชั้นวางหรือโซนเดียวกัน ทำให้เกิดการหยิบสลับได้ง่าย</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <span class="text-2xl bg-slate-100 p-2 rounded-lg">📋</span> 
+                            <div>
+                                <p class="font-bold text-slate-800 text-base">การหยิบโดยไม่สแกน (Manual Picking Error)</p>
+                                <p class="text-sm text-slate-600 mt-1">ใบสั่งจ่าย (Picking List) อาจระบุแค่ "ท่อพีวีซี 1/2 นิ้ว" โดยไม่ได้เน้นยี่ห้อ หรือพนักงานไม่ตรวจสอบบาร์โค้ดตอนหยิบขึ้นรถบรรทุก</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <span class="text-2xl bg-slate-100 p-2 rounded-lg">📥</span> 
+                            <div>
+                                <p class="font-bold text-slate-800 text-base">การรับสินค้าผิดสเปค (Receiving Blindly)</p>
+                                <p class="text-sm text-slate-600 mt-1">ซัพพลายเออร์ส่งสินค้าทดแทน (ยี่ห้ออื่น) มาให้ แต่ฝ่ายรับสินค้าเซ็นรับและนำเข้าระบบเป็นรหัสสินค้าเดิม ทำให้ยอดในระบบบิดเบือนตั้งแต่ต้นน้ำ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <!-- Short Term -->
+                    <div>
+                        <h3 class="text-lg font-bold text-amber-800 bg-amber-100 border border-amber-200 rounded-t-xl px-5 py-3 flex items-center gap-2">
+                            <span>⚡</span> แผนแก้ไขเร่งด่วน (Quick Wins)
+                        </h3>
+                        <div class="bg-white border border-t-0 border-amber-200 rounded-b-xl p-5 shadow-sm">
+                            <ul class="space-y-4 text-sm text-slate-700">
+                                <li class="flex items-start gap-3"><span class="text-amber-500 font-bold mt-0.5">1.</span> <span><strong>จับคู่นับเคลียร์สต๊อก (Offset Recount):</strong> สั่งตรวจนับท่อพีวีซีขนาดเดียวกัน "ทุกยี่ห้อ" พร้อมกัน เพื่อหาผลรวมที่แท้จริงและทำเรื่องโอนย้ายรหัสในระบบ (Inventory Adjustment) ให้ตรงกับของจริง</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-500 font-bold mt-0.5">2.</span> <span><strong>ทำป้ายติดชั้นวางขนาดใหญ่ (Visual Management):</strong> ใช้กระดาษสีหรือป้ายสัญลักษณ์ติดที่พาเลทหรือชั้นวาง เช่น ท่อน้ำไทย = ป้ายเหลือง, ตราเพชร = ป้ายฟ้า เพื่อให้คนหยิบเห็นชัดเจนแต่ไกล</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-500 font-bold mt-0.5">3.</span> <span><strong>เน้นย้ำใบจัดของ:</strong> บังคับให้ฝ่ายขายระบุ "ยี่ห้อ" ให้ชัดเจนตัวโตๆ ในใบจัดสินค้า และสั่งพนักงานโกดังห้ามหยิบของทดแทนโดยพลการ</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Long Term -->
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-800 bg-blue-100 border border-blue-200 rounded-t-xl px-5 py-3 flex items-center gap-2">
+                            <span>🛠️</span> แผนปรับปรุงโครงสร้าง (System & Layout)
+                        </h3>
+                        <div class="bg-white border border-t-0 border-blue-200 rounded-b-xl p-5 shadow-sm">
+                            <ul class="space-y-4 text-sm text-slate-700">
+                                <li class="flex items-start gap-3"><span class="text-blue-500 font-bold mt-0.5">1.</span> <span><strong>จัดโครงสร้างผังโกดังใหม่ (Warehouse Re-layout):</strong> แยกร้านจัดเก็บ (Bin Location) ของสินค้าที่คล้ายกันให้อยู่ห่างกัน (เช่น คนละซอย หรือคนละฝั่ง) ป้องกันการหยิบผิดกอง</span></li>
+                                <li class="flex items-start gap-3"><span class="text-blue-500 font-bold mt-0.5">2.</span> <span><strong>นำระบบ Barcode/WMS มาใช้ในการจัดของ:</strong> พนักงานโกดังต้องใช้ Handheld Scanner สแกนบาร์โค้ดสินค้ายืนยันตอนหยิบขึ้นรถ หากหยิบผิดยี่ห้อระบบจะแจ้งเตือน (Error) ทันที</span></li>
+                                <li class="flex items-start gap-3"><span class="text-blue-500 font-bold mt-0.5">3.</span> <span><strong>กำหนดรอบการนับแบบ Cycle Count:</strong> แบ่งรอบนับสินค้าหมวดท่อพีวีซีทุกสัปดาห์ (สัปดาห์ละ 1 ขนาด) เพื่อเจอปัญหาและแก้ไขได้ไว ไม่ต้องรอตกใจตอนสิ้นเดือน</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. STATE & DATA ---
+        // Representative data extracted from both tables to show the issues
+        const inventoryData = [
+            // Construction (Updated based on new stats: 122 items, 52 match, 70 mismatch)
+            { id: "B0-0101", name: "ไม้อัด ไส้ MDF หน้ายาง 3mm", sys: 224, count: 216, diff: -8, status: "ขาด", cat: "construction" },
+            { id: "B0-0204-A", name: "ไม้อัด ไส้ไม้ 10mm A", sys: 124, count: 125, diff: 1, status: "เกิน", cat: "construction" },
+            { id: "B0-0304", name: "ไม้อัด ฟิล์มดำ 10mm", sys: 517, count: 512, diff: -5, status: "ขาด", cat: "construction" },
+            { id: "B5-0004", name: "พลั่วปลายตัด ด้ามเหล็ก KNK เขียว", sys: 68, count: 60, diff: -8, status: "ขาด", cat: "construction" },
+            { id: "B5-0004-01", name: "พลั่วปลายแหลม ด้ามเหล็ก KNK", sys: 80, count: 88, diff: 8, status: "เกิน", cat: "construction" },
+            { id: "B5-0006", name: "เกียงโป๊วสี 1 1/2\"", sys: 35, count: 24, diff: -11, status: "ขาด", cat: "construction" },
+            { id: "B5-0006-03", name: "เกียงโป๊วสี 3\"", sys: 36, count: 48, diff: 12, status: "เกิน", cat: "construction" },
+            { id: "B5-0021", name: "เกียงฉาบปูน PVC สีฟ้า", sys: 144, count: 90, diff: -54, status: "ขาด", cat: "construction" },
+            { id: "B5-0021-02", name: "เกียงฉาบปูน PVC สีดำ", sys: 247, count: 297, diff: 50, status: "เกิน", cat: "construction" },
+            // PVC Pipes
+            { id: "P0-0701", name: "ท่อพีวีซี 1/2\" ตราเพชร (ปลายเรียบ)", sys: 5184, count: 5150, diff: -34, status: "ขาด", cat: "pvc" },
+            { id: "P0-0901", name: "ท่อพีวีซี 1/2\" Q-PIPE (ปลายเรียบ)", sys: 276, count: 272, diff: -4, status: "ขาด", cat: "pvc" },
+            { id: "P0-1301", name: "ท่อพีวีซี 1/2\" ตราดาว (ปลายเรียบ)", sys: 2375, count: 2424, diff: 49, status: "เกิน", cat: "pvc" },
+            { id: "P0-1402", name: "ท่อพีวีซี 1/2\" ท่อน้ำไทย", sys: 82, count: 83, diff: 1, status: "เกิน", cat: "pvc" },
+            { id: "P0-0703", name: "ท่อพีวีซี 3/4\" ตราเพชร", sys: 825, count: 824, diff: -1, status: "ขาด", cat: "pvc" },
+            { id: "P0-0903", name: "ท่อพีวีซี 3/4\" Q-PIPE", sys: 383, count: 352, diff: -31, status: "ขาด", cat: "pvc" },
+            { id: "P0-1303", name: "ท่อพีวีซี 3/4\" ตราดาว", sys: 10, count: 16, diff: 6, status: "เกิน", cat: "pvc" },
+            { id: "P0-2005", name: "ท่อพีวีซีเหลือง 3/8\" ห้าดาว", sys: 874, count: 828, diff: -46, status: "ขาด", cat: "pvc" }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 2. TAB NAVIGATION LOGIC ---
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    const targetId = btn.getAttribute('data-tab');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // --- 3. TABLE FILTERING LOGIC ---
+            const tableBody = document.getElementById('inventoryTableBody');
+            const recordCount = document.getElementById('tableRecordCount');
+            const filterSelect = document.getElementById('categoryFilter');
+
+            const renderTable = (filter) => {
+                tableBody.innerHTML = ''; 
+                let filteredData = inventoryData;
+
+                if (filter !== 'all') {
+                    filteredData = inventoryData.filter(item => item.cat === filter);
+                }
+
+                if (filteredData.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">ไม่พบข้อมูล</td></tr>`;
+                    return;
+                }
+
+                filteredData.forEach(item => {
+                    const diffColor = item.diff < 0 ? 'text-rose-600' : 'text-blue-600';
+                    const diffSign = item.diff > 0 ? '+' : '';
+                    const statusBadge = item.status === 'ขาด' 
+                        ? '<span class="bg-rose-100 text-rose-700 px-2 py-1 rounded border border-rose-200 text-xs">📉 ขาด</span>'
+                        : '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded border border-blue-200 text-xs">📈 เกิน</span>';
+                    
+                    const catDot = item.cat === 'construction' ? '<span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-2"></span>' : '<span class="inline-block w-2 h-2 rounded-full bg-sky-500 mr-2"></span>';
+
+                    const row = `
+                        <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                            <td class="p-4 font-mono text-slate-500">${catDot}${item.id}</td>
+                            <td class="p-4 text-slate-800 font-medium">${item.name}</td>
+                            <td class="p-4 text-center text-slate-600">${item.sys.toLocaleString()}</td>
+                            <td class="p-4 text-center text-slate-600">${item.count.toLocaleString()}</td>
+                            <td class="p-4 text-right font-bold ${diffColor}">${diffSign}${item.diff.toLocaleString()}</td>
+                            <td class="p-4 text-center">${statusBadge}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+                
+                recordCount.innerText = `แสดงข้อมูลไฮไลท์ ${filteredData.length} รายการ ที่แสดงพฤติกรรมการหยิบผิดแบรนด์/ผิดรุ่น`;
+            };
+
+            renderTable('all');
+            filterSelect.addEventListener('change', (e) => {
+                renderTable(e.target.value);
+            });
+
+            // --- 4. CHART.JS INITIALIZATION ---
+            Chart.defaults.font.family = "'Sarabun', sans-serif";
+            Chart.defaults.color = '#64748b';
+
+            // Chart 1: Stacked Bar Chart (SKU Comparison)
+            const ctxSku = document.getElementById('skuChart').getContext('2d');
+            new Chart(ctxSku, {
+                type: 'bar',
+                data: {
+                    labels: ['วัสดุก่อสร้าง', 'ท่อพีวีซี'],
+                    datasets: [
+                        {
+                            label: 'SKU สต๊อกขาด',
+                            data: [38, 21], // Construction updated to balance the 70 mismatches
+                            backgroundColor: '#e11d48', // Rose
+                        },
+                        {
+                            label: 'SKU สต๊อกเกิน',
+                            data: [32, 30], // Construction updated to balance the 70 mismatches
+                            backgroundColor: '#3b82f6', // Blue
+                        },
+                        {
+                            label: 'SKU ยอดตรง',
+                            data: [52, 85], // Construction updated to 52
+                            backgroundColor: '#10b981', // Emerald
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { stacked: true, grid: { display: false } },
+                        y: { stacked: true, grid: { color: '#f1f5f9' } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.dataset.label}: ${context.raw} รายการ`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Doughnut Chart (Financial Variance Value)
+            const ctxValue = document.getElementById('valueDoughnutChart').getContext('2d');
+            new Chart(ctxValue, {
+                type: 'doughnut',
+                data: {
+                    labels: ['วัสดุก่อสร้าง (ขาด)', 'วัสดุก่อสร้าง (เกิน)', 'ท่อพีวีซี (ขาด)', 'ท่อพีวีซี (เกิน)'],
+                    datasets: [{
+                        data: [6784.51, 5460.77, 8056.65, 8737.43],
+                        backgroundColor: [
+                            '#d97706', // Amber dark
+                            '#fcd34d', // Amber light
+                            '#0284c7', // Sky dark
+                            '#7dd3fc'  // Sky light
+                        ],
+                        borderWidth: 1,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '50%',
+                    plugins: {
+                        legend: { position: 'right' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ฿${context.raw.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>

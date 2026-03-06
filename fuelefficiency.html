@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Efficiency Dashboard - Feb 2026</title>
+    <!-- Tailwind CSS สำหรับจัด Layout และ Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js สำหรับสร้างกราฟ -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #f3f4f6; }
+        .card { background: white; border-radius: 0.5rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); padding: 1.5rem; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">รายงานประสิทธิภาพการใช้เชื้อเพลิง (Fuel Efficiency)</h1>
+                <p class="text-gray-500 text-lg mt-1">ประจำเดือน กุมภาพันธ์ 2026 เปรียบเทียบ มกราคม 2026</p>
+            </div>
+            <div class="mt-4 md:mt-0 bg-blue-600 text-white px-4 py-2 rounded-lg shadow font-semibold">
+                ยอดขายรวม: 7,583,094.21 บาท
+            </div>
+        </div>
+
+        <!-- KPIs (Key Performance Indicators) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="card border-l-4 border-blue-500">
+                <div class="text-sm font-medium text-gray-500 mb-1">ระยะทางรวม (ก.พ.)</div>
+                <div class="text-2xl font-bold text-gray-800">25,609 <span class="text-sm font-normal text-gray-500">km</span></div>
+            </div>
+            <div class="card border-l-4 border-red-500">
+                <div class="text-sm font-medium text-gray-500 mb-1">ค่าน้ำมันรวม (ก.พ.)</div>
+                <div class="text-2xl font-bold text-gray-800">84,770 <span class="text-sm font-normal text-gray-500">บาท</span></div>
+            </div>
+            <div class="card border-l-4 border-green-500">
+                <div class="text-sm font-medium text-gray-500 mb-1">อัตราสิ้นเปลืองเฉลี่ย</div>
+                <div class="text-2xl font-bold text-gray-800">9.24 <span class="text-sm font-normal text-gray-500">km/ลิตร</span></div>
+            </div>
+            <div class="card border-l-4 border-purple-500">
+                <div class="text-sm font-medium text-gray-500 mb-1">ต้นทุนน้ำมันเฉลี่ย</div>
+                <div class="text-2xl font-bold text-gray-800">3.31 <span class="text-sm font-normal text-gray-500">บาท/km</span></div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Chart 1: Comparison -->
+            <div class="card lg:col-span-2">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">เปรียบเทียบอัตราสิ้นเปลือง (km/ลิตร) : เป้าหมาย vs ม.ค. vs ก.พ.</h2>
+                <div class="relative h-72">
+                    <canvas id="kmlComparisonChart"></canvas>
+                </div>
+            </div>
+            <!-- Chart 2: Cost Breakdown -->
+            <div class="card">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">สัดส่วนค่าน้ำมัน (บาท) แยกตามรถ</h2>
+                <div class="relative h-72 flex justify-center">
+                    <canvas id="costDoughnutChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="card mb-8 shadow-md border border-gray-50">
+            <!-- Header แบบหรูหรา -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 pb-4 border-b border-gray-100">
+                <div class="flex items-center space-x-4">
+                    <div class="p-3 bg-gradient-to-br from-slate-800 to-black rounded-xl shadow-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path><path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600">รายละเอียดข้อมูลการวิ่งรถ</h2>
+                        <p class="text-sm font-medium text-gray-500 mt-1">ประจำเดือน กุมภาพันธ์ 2026</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                <table class="min-w-full divide-y divide-gray-200 text-sm">
+                    <thead class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900">
+                        <tr>
+                            <th class="px-4 py-4 text-left text-xs font-semibold text-slate-100 uppercase tracking-wider">ลำดับ/รถ/คนขับ</th>
+                            <th class="px-4 py-4 text-right text-xs font-semibold text-slate-100 uppercase tracking-wider">ระยะทาง <span class="text-slate-400 font-normal block mt-1">(km)</span></th>
+                            <th class="px-4 py-4 text-right text-xs font-semibold text-slate-100 uppercase tracking-wider">ค่าน้ำมัน <span class="text-slate-400 font-normal block mt-1">(บาท)</span></th>
+                            <th class="px-4 py-4 text-right text-xs font-semibold text-slate-100 uppercase tracking-wider">เป้าหมาย <span class="text-slate-400 font-normal block mt-1">(km/L)</span></th>
+                            <th class="px-4 py-4 text-right text-xs font-bold text-emerald-400 uppercase tracking-wider">ก.พ. 26 <span class="text-emerald-400/70 font-normal block mt-1">(km/L)</span></th>
+                            <th class="px-4 py-4 text-right text-xs font-semibold text-slate-100 uppercase tracking-wider">ต้นทุน <span class="text-slate-400 font-normal block mt-1">(บาท/km)</span></th>
+                            <th class="px-4 py-4 text-right text-xs font-semibold text-slate-100 uppercase tracking-wider">% เทียบยอดขาย</th>
+                            <th class="px-4 py-4 text-center text-xs font-semibold text-slate-100 uppercase tracking-wider">สถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100" id="tableBody">
+                        <!-- Data will be injected here by JS -->
+                    </tbody>
+                    <tfoot class="bg-slate-50 font-bold border-t border-gray-200">
+                        <tr>
+                            <td class="px-4 py-4 text-center text-slate-700">รวม/เฉลี่ย</td>
+                            <td class="px-4 py-4 text-right text-slate-800">25,609</td>
+                            <td class="px-4 py-4 text-right text-slate-800">84,770</td>
+                            <td class="px-4 py-4 text-right text-slate-400">-</td>
+                            <td class="px-4 py-4 text-right text-emerald-600 text-base">9.24</td>
+                            <td class="px-4 py-4 text-right text-slate-800">3.31</td>
+                            <td class="px-4 py-4 text-right text-slate-800">1.12%</td>
+                            <td class="px-4 py-4 text-center text-slate-400">-</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Analysis Section -->
+        <div class="card bg-blue-50 border border-blue-100">
+            <h2 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                สรุปผลการวิเคราะห์ข้อมูล (Executive Summary)
+            </h2>
+            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li><strong class="text-green-700">แนวโน้มเชิงบวก:</strong> รถทุกคันมีประสิทธิภาพการประหยัดน้ำมัน (km/ลิตร) ในเดือนกุมภาพันธ์ <strong>ดีขึ้นกว่าเดือนมกราคม</strong> อย่างชัดเจน</li>
+                <li><strong class="text-blue-700">การบรรลุเป้าหมาย:</strong> รถ 3 คันที่ทำผลงานได้ <strong>สูงกว่าเป้าหมาย</strong> คือ <span class="font-semibold">ทำเงิน (7.58), พี่หมาน (9.10), และ ออมสิน (12.01)</span></li>
+                <li><strong class="text-yellow-600">จุดที่ต้องพัฒนา:</strong> รถ <span class="font-semibold">บุญหนัก (6.89) และ นำโชค (9.28)</span> แม้จะทำได้ดีขึ้นกว่าเดือนก่อน แต่ยัง <strong>ต่ำกว่าเป้าหมาย</strong> ที่ตั้งไว้เล็กน้อย</li>
+                <li><strong class="text-red-600">ต้นทุนและยอดขาย:</strong> รถ <strong>"บุญหนัก"</strong> มีต้นทุนน้ำมันต่อระยะทางแพงที่สุด (4.45 บาท/km) และเมื่อเทียบสัดส่วนค่าน้ำมันกับยอดขายสูงถึง <strong>2.31%</strong> (สูงกว่าค่าเฉลี่ยที่ 1.12%) ซึ่งควรตรวจสอบเส้นทางวิ่ง น้ำหนักบรรทุก หรือพฤติกรรมการขับขี่ของคุณวิชัย</li>
+                <li><strong class="text-green-600">ประสิทธิภาพสูงสุด:</strong> รถ <strong>"ออมสิน"</strong> ทำระยะทางต่อลิตรได้ดีที่สุด (12.01 km/l) ทำให้มีต้นทุนเฉลี่ยต่ำสุดเพียง 2.54 บาท/km</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Data derived from the user's images
+        const fleetData = [
+            { id: 1, plate: '84-5551 อด', name: 'บุญหนัก', driver: 'วิชัย', distance: 1457, cost: 6480, target: 7.00, janKml: 6.74, febKml: 6.89, bahtKm: 4.45, pctSales: 2.31 },
+            { id: 2, plate: '84-3178 อด', name: 'ทำเงิน', driver: 'บูรพา', distance: 3703, cost: 14940, target: 6.80, janKml: 7.07, febKml: 7.58, bahtKm: 4.03, pctSales: 0.90 },
+            { id: 3, plate: '83-9195 อด', name: 'พี่หมาน', driver: 'ใย', distance: 6963, cost: 23420, target: 8.70, janKml: 8.52, febKml: 9.10, bahtKm: 3.36, pctSales: 1.08 },
+            { id: 4, plate: '84-1902 อด', name: 'นำโชค', driver: 'เรืองยศ', distance: 7488, cost: 24670, target: 9.50, janKml: 8.83, febKml: 9.28, bahtKm: 3.29, pctSales: 1.19 },
+            { id: 5, plate: '2ฒบ 2585 กทม.', name: 'ออมสิน', driver: '-', distance: 5998, cost: 15260, target: 11.80, janKml: 10.61, febKml: 12.01, bahtKm: 2.54, pctSales: 1.08 }
+        ];
+
+        // Format number with commas
+        const formatNumber = (num) => {
+            return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        };
+
+        // Render Table Data
+        const tbody = document.getElementById('tableBody');
+        fleetData.forEach((car, index) => {
+            // Logic for coloring (Green if Feb > Target, Red if Feb < Target)
+            const kmlColor = car.febKml >= car.target ? 'text-green-600 font-bold' : 'text-red-600 font-bold';
+            // Logic for Sales Pct (Warning if > 2%)
+            const pctColor = car.pctSales > 2.0 ? 'text-red-500 font-bold' : 'text-gray-700';
+            
+            // Logic for Pass/Fail Status Badge
+            const statusBadge = car.febKml >= car.target 
+                ? '<span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full bg-emerald-100 text-emerald-700 shadow-sm border border-emerald-200">ผ่านเกณฑ์</span>' 
+                : '<span class="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full bg-rose-100 text-rose-700 shadow-sm border border-rose-200">ไม่ผ่าน</span>';
+
+            const row = `
+                <tr class="hover:bg-slate-50 transition-colors duration-200">
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        <div class="font-bold text-slate-800">${index + 1}. ${car.name}</div>
+                        <div class="text-xs text-slate-500 mt-1 flex items-center">
+                            <span class="bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 text-slate-600 mr-2">${car.plate}</span> ผข: ${car.driver}
+                        </div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-right text-slate-700 font-medium">${formatNumber(car.distance)}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-right text-slate-700 font-medium">${formatNumber(car.cost)}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-right text-slate-400">${car.target.toFixed(2)}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-right ${kmlColor} text-base">${car.febKml.toFixed(2)}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-right text-slate-700 font-medium">${car.bahtKm.toFixed(2)}</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-right ${pctColor} font-medium">${car.pctSales.toFixed(2)}%</td>
+                    <td class="px-4 py-4 whitespace-nowrap text-center">${statusBadge}</td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+
+        // Setup Chart.js Defaults
+        Chart.defaults.font.family = "'Sarabun', sans-serif";
+
+        // Chart 1: Bar & Line Comparison Chart
+        const ctxComparison = document.getElementById('kmlComparisonChart').getContext('2d');
+        new Chart(ctxComparison, {
+            type: 'bar',
+            data: {
+                labels: fleetData.map(d => d.name),
+                datasets: [
+                    {
+                        label: 'เป้าหมาย (Target)',
+                        data: fleetData.map(d => d.target),
+                        type: 'line',
+                        borderColor: '#ef4444', // Red
+                        backgroundColor: '#ef4444',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        pointRadius: 5,
+                        order: 1
+                    },
+                    {
+                        label: 'ม.ค. 26',
+                        data: fleetData.map(d => d.janKml),
+                        backgroundColor: '#93c5fd', // Light Blue
+                        order: 3
+                    },
+                    {
+                        label: 'ก.พ. 26',
+                        data: fleetData.map(d => d.febKml),
+                        backgroundColor: '#2563eb', // Dark Blue
+                        order: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'กิโลเมตร / ลิตร' }
+                    }
+                },
+                plugins: {
+                    tooltip: { mode: 'index', intersect: false }
+                }
+            }
+        });
+
+        // Chart 2: Cost Breakdown Doughnut Chart
+        const ctxCost = document.getElementById('costDoughnutChart').getContext('2d');
+        new Chart(ctxCost, {
+            type: 'doughnut',
+            data: {
+                labels: fleetData.map(d => d.name),
+                datasets: [{
+                    data: fleetData.map(d => d.cost),
+                    backgroundColor: [
+                        '#f87171', // Red
+                        '#fbbf24', // Yellow
+                        '#34d399', // Green
+                        '#60a5fa', // Blue
+                        '#a78bfa'  // Purple
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed !== null) {
+                                    label += new Intl.NumberFormat('th-TH').format(context.parsed) + ' บาท';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

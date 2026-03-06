@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard รายงานการฝึกอบรม - กุมภาพันธ์ 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* CSS resets and base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: #f3f4f6; /* Lighter background for the single page */
+            color: #1f2937;
+            padding: 20px;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr;
+            /* Create a CSS Grid layout for the sections */
+            grid-template-rows: auto auto auto; 
+            gap: 20px;
+            padding: 20px;
+            border-top: 6px solid #2E7D32;
+        }
+
+        /* Header Section */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .header-section h1 {
+            color: #1B5E20;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header-section p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .executive-badge {
+            background-color: #fef3c7;
+            color: #d97706;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        /* KPI Section */
+        .kpi-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .kpi-card {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .kpi-icon {
+            background-color: #e0f2fe;
+            color: #0284c7;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .kpi-card:nth-child(2) .kpi-icon {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+
+        .kpi-card:nth-child(3) .kpi-icon {
+            background-color: #fef08a;
+            color: #ca8a04;
+        }
+
+        .kpi-content h3 {
+            font-size: 14px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .kpi-content .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        /* Main Content Grid */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        /* Section Containers */
+        .section-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        
+        .id-badge {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-family: monospace;
+        }
+
+        /* Chart/Progress Bar Styles */
+        .progress-container {
+            margin-bottom: 15px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .progress-bar-bg {
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .fill-green { background-color: #22c55e; }
+        .fill-yellow { background-color: #eab308; }
+
+        /* Course Highlight Styles */
+        .highlight-card {
+            background: linear-gradient(to bottom right, #f0fdf4, #ffffff);
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .highlight-card h4 {
+            color: #166534;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .highlight-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .highlight-list li {
+            margin-bottom: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #475569;
+        }
+
+        .highlight-list i {
+            color: #22c55e;
+            margin-top: 3px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    
+    <!-- 1. Header Section -->
+    <div class="header-section">
+        <div>
+            <h1>รายงานผลการฝึกอบรมพนักงาน</h1>
+            <p>ประจำเดือน กุมภาพันธ์ 2026 | บริษัท พัฒนาสิน ไทยเทรดดิ้ง</p>
+        </div>
+        <div class="executive-badge">
+            <i class="fa-solid fa-chart-line"></i> Executive Dashboard
+        </div>
+    </div>
+
+    <!-- 2. KPI Section -->
+    <div class="kpi-section">
+        <div class="kpi-card">
+            <div class="kpi-icon">
+                <i class="fa-solid fa-bullseye"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>เป้าหมายความสำเร็จ (YTD)</h3>
+                <div class="number">100%</div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>ผู้เข้ารับการอบรมสะสม (ม.ค. - ก.พ.)</h3>
+                <div class="number">5 <span style="font-size: 16px; color:#64748b; font-weight: normal;">ท่าน</span></div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon">
+                <i class="fa-solid fa-user-plus"></i>
+            </div>
+            <div class="kpi-content">
+                <h3>ผู้เข้ารับการอบรม (เดือน ก.พ.)</h3>
+                <div class="number">1 <span style="font-size: 16px; color:#64748b; font-weight: normal;">ท่าน</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Main Content Area -->
+    <div class="main-content">
+        
+        <!-- Left Column (Tables & Charts) -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- Table Section -->
+            <div class="section-container">
+                <h2 class="section-title">
+                    <i class="fa-solid fa-list-check" style="color: #2E7D32;"></i>
+                    รายชื่อผู้เข้ารับการอบรม (กุมภาพันธ์ 2026)
+                </h2>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 5%; text-align: center;">ลำดับ</th>
+                                <th style="width: 25%;">ชื่อ-สกุลพนักงาน</th>
+                                <th style="width: 15%;">รหัสพนักงาน</th>
+                                <th style="width: 25%;">ตำแหน่ง</th>
+                                <th style="width: 30%;">หลักสูตรที่เข้าอบรม</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align: center;">6</td>
+                                <td><strong>สมบัติ แก้วมงคล</strong></td>
+                                <td><span class="badge id-badge">PTS-049</span></td>
+                                <td>หัวหน้าแผนกจัดส่ง / คลัง</td>
+                                <td>
+                                    Counterbalance Forklift Operations
+                                    <span class="badge badge-success" style="float: right;">
+                                        <i class="fa-solid fa-check"></i> ผ่าน
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+             <!-- Charts/Progress Section -->
+             <div class="section-container">
+                <h2 class="section-title">
+                    <i class="fa-solid fa-chart-bar" style="color: #0284c7;"></i>
+                    สัดส่วนผู้เข้ารับการอบรมรายเดือนเทียบกับยอดสะสม
+                </h2>
+                
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>มกราคม 2026 (4 ท่าน)</span>
+                        <span>80% ของยอดสะสม</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill fill-green" style="width: 80%;"></div>
+                    </div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>กุมภาพันธ์ 2026 (1 ท่าน)</span>
+                        <span>20% ของยอดสะสม</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill fill-yellow" style="width: 20%;"></div>
+                    </div>
+                </div>
+                
+                <p style="font-size: 14px; color: #64748b; margin-top: 20px; text-align: center;">
+                    <i class="fa-solid fa-info-circle"></i> ยอดสะสมรวม 5 ท่าน (ม.ค. - ก.พ. 2026)
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Column (Highlights & Summary) -->
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- Highlight Section -->
+            <div class="section-container highlight-card">
+                 <h2 class="section-title" style="border-bottom-color: #bbf7d0;">
+                    <i class="fa-solid fa-star" style="color: #eab308;"></i>
+                    ไฮไลท์หลักสูตรเดือนนี้
+                </h2>
+                <h4>Counterbalance Forklift Operations</h4>
+                <p style="font-size: 14px; color: #475569; line-height: 1.5;">
+                    การฝึกอบรมเชิงปฏิบัติการเพื่อเพิ่มทักษะและความปลอดภัยในการควบคุมรถยก (Forklift) เพื่อการจัดการพื้นที่คลังสินค้าและการจัดส่ง
+                </p>
+                
+                <ul class="highlight-list">
+                    <li>
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span><strong>ความปลอดภัย:</strong> ลดความเสี่ยงในการเกิดอุบัติเหตุในคลังสินค้า</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-gears"></i>
+                        <span><strong>ประสิทธิภาพ:</strong> การจัดการสินค้าและขับเคลื่อนระบบโลจิสติกส์</span>
+                    </li>
+                    <li>
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                         <span><strong>พัฒนาผู้นำ:</strong> เพื่อเป็นแบบอย่างที่ดีให้กับทีมงานจัดส่ง</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

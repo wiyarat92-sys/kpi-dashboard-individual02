@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สรุปยอดขาย กุมภาพันธ์ - บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด</title>
+    
+    <!-- นำเข้า Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- นำเข้าฟอนต์ Sarabun -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- นำเข้า Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f8fafc;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease-in-out;
+        }
+        .card-shadow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="text-slate-800 p-4 md:p-8 min-h-screen">
+
+    <div class="max-w-7xl mx-auto space-y-6">
+        
+        <!-- ส่วนหัว (Header) -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center bg-white p-6 rounded-2xl card-shadow border-l-8 border-orange-500">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800">Dashboard สรุปยอดขายช่องทางออนไลน์</h1>
+                <p class="text-slate-500 mt-1">บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด</p>
+            </div>
+            <div class="text-right mt-4 md:mt-0 w-full md:w-auto border-t md:border-t-0 pt-4 md:pt-0 border-slate-100">
+                <div class="text-3xl font-bold text-orange-600">กุมภาพันธ์</div>
+                <p class="text-sm text-slate-400 font-medium">เปรียบเทียบ มกราคม (ปี 2569)</p>
+            </div>
+        </header>
+
+        <!-- KPI Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- Card 1: ยอดขายรวม -->
+            <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider">ยอดขายรวม (ก.พ.)</h3>
+                    <div class="p-2 bg-red-100 rounded-lg text-red-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" /></svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-red-600">402,238</div>
+                <div class="flex items-center mt-2 text-sm text-red-600 font-medium bg-red-50 w-fit px-2 py-1 rounded">
+                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <span>ต่ำกว่าเป้า -197,762</span>
+                </div>
+            </div>
+
+            <!-- Card 2: เป้าหมาย -->
+            <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider">เป้าหมาย (Target)</h3>
+                    <div class="p-2 bg-slate-100 rounded-lg text-slate-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-slate-800">600,000</div>
+                <p class="text-xs text-slate-400 mt-2">เป้าหมายรายวันสะสม: 23,077</p>
+            </div>
+
+            <!-- Card 3: % ความสำเร็จ -->
+            <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider">ความสำเร็จ (Achievement)</h3>
+                    <div class="p-2 bg-orange-100 rounded-lg text-orange-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" /></svg>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-orange-500">67.04%</div>
+                <div class="w-full bg-slate-100 rounded-full h-2 mt-3 overflow-hidden">
+                    <div class="bg-orange-500 h-2 rounded-full" style="width: 67.04%"></div>
+                </div>
+            </div>
+
+            <!-- Card 4: วันทำงาน -->
+            <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-slate-500 text-sm font-semibold uppercase tracking-wider">วันทำงาน (ก.พ.)</h3>
+                    <div class="p-2 bg-indigo-100 rounded-lg text-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    </div>
+                </div>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <div class="text-2xl font-bold text-slate-800">7 วัน</div>
+                        <p class="text-xs text-orange-600 font-medium">เข้าเป้า</p>
+                    </div>
+                    <div class="text-right border-l pl-4 border-slate-200">
+                        <div class="text-xl font-bold text-slate-500">24 วัน</div>
+                        <p class="text-xs text-slate-400">วันทำงานทั้งหมด</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Main Bar Chart -->
+            <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-100 lg:col-span-2">
+                <h3 class="text-lg font-bold text-slate-700 mb-6 flex items-center">
+                    <span class="w-2 h-6 bg-slate-400 rounded-full mr-3"></span>
+                    เปรียบเทียบยอดขาย มกราคม vs กุมภาพันธ์
+                </h3>
+                <div class="relative h-72 w-full">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Donut Chart -->
+            <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-100">
+                <h3 class="text-lg font-bold text-slate-700 mb-6 flex items-center">
+                    <span class="w-2 h-6 bg-orange-500 rounded-full mr-3"></span>
+                    สัดส่วนความสำเร็จ ก.พ.
+                </h3>
+                <div class="relative h-64 w-full flex justify-center">
+                    <canvas id="progressChart"></canvas>
+                </div>
+                <div class="mt-6 text-center p-4 bg-red-50 rounded-xl border border-red-100">
+                    <p class="text-sm text-red-800">ส่วนที่ยังขาดจากเป้าหมาย</p>
+                    <p class="text-2xl font-bold text-red-600">197,762 <span class="text-sm font-normal">บาท</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Table Section -->
+        <div class="bg-white rounded-2xl card-shadow border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center">
+                        <span class="w-2 h-6 bg-indigo-600 rounded-full mr-3"></span>
+                        ตารางสรุปเปรียบเทียบผลประกอบการ (MoM)
+                    </h3>
+                    <p class="text-sm text-slate-500 mt-1 ml-5">มกราคม 2569เทียบกับ กุมภาพันธ์ 2569</p>
+                </div>
+                <span class="bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">MoM Comparison</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left text-slate-600">
+                    <thead class="text-xs text-slate-700 uppercase bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 font-semibold">รายการวิเคราะห์</th>
+                            <th scope="col" class="px-6 py-4 text-right font-semibold">มกราคม</th>
+                            <th scope="col" class="px-6 py-4 text-right font-semibold border-x border-slate-200 bg-orange-50">กุมภาพันธ์</th>
+                            <th scope="col" class="px-6 py-4 text-right font-semibold">ผลต่าง (Difference)</th>
+                            <th scope="col" class="px-6 py-4 text-center font-semibold">สถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">เป้าหมาย (บาท)</td>
+                            <td class="px-6 py-4 text-right">600,000</td>
+                            <td class="px-6 py-4 text-right font-medium border-x border-slate-100 bg-orange-50/30">600,000</td>
+                            <td class="px-6 py-4 text-right text-slate-400">-</td>
+                            <td class="px-6 py-4 text-center"><span class="text-slate-400">-</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors bg-white">
+                            <td class="px-6 py-4 font-bold text-slate-900">ยอดขายทำได้ (บาท)</td>
+                            <td class="px-6 py-4 text-right text-blue-600 font-bold">668,691</td>
+                            <td class="px-6 py-4 text-right text-red-600 font-bold border-x border-slate-100 bg-orange-50/50">402,238</td>
+                            <td class="px-6 py-4 text-right font-bold text-red-600">-266,453</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="bg-red-100 text-red-700 text-xs font-medium px-2 py-1 rounded">ลดลง 39.8%</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">% ความสำเร็จตามเป้า</td>
+                            <td class="px-6 py-4 text-right">111.45%</td>
+                            <td class="px-6 py-4 text-right font-medium border-x border-slate-100 bg-orange-50/30">67.04%</td>
+                            <td class="px-6 py-4 text-right text-red-500">-44.41%</td>
+                            <td class="px-6 py-4 text-center">
+                                <svg class="w-5 h-5 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">จำนวนวันทำงาน (วัน)</td>
+                            <td class="px-6 py-4 text-right">26</td>
+                            <td class="px-6 py-4 text-right font-medium border-x border-slate-100 bg-orange-50/30">24</td>
+                            <td class="px-6 py-4 text-right text-slate-500">-2</td>
+                            <td class="px-6 py-4 text-center"><span class="text-slate-400">-</span></td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-4 font-medium text-slate-900">วันที่ยอดเข้าเป้า (วัน)</td>
+                            <td class="px-6 py-4 text-right text-green-600">10</td>
+                            <td class="px-6 py-4 text-right font-medium text-orange-600 border-x border-slate-100 bg-orange-50/30">7</td>
+                            <td class="px-6 py-4 text-right text-red-500">-3</td>
+                            <td class="px-6 py-4 text-center">
+                                <svg class="w-5 h-5 text-red-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 bg-slate-50 text-xs text-slate-500 border-t border-slate-100 flex items-start">
+                <svg class="w-4 h-4 mr-2 flex-shrink-0 mt-0.5 text-slate-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                หมายเหตุ: เดือนกุมภาพันธ์มีจำนวนวันทำงานน้อยกว่ามกราคม 2 วัน (24 วัน vs 26 วัน) ซึ่งอาจส่งผลต่อยอดขายรวม
+            </div>
+        </div>
+
+        <footer class="text-center py-6 text-slate-400 text-sm">
+            <p>&copy; 2026 บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด | Internal Report</p>
+        </footer>
+
+    </div>
+
+    <!-- Scripts for Charts Configuration -->
+    <script>
+        Chart.defaults.font.family = "'Sarabun', sans-serif";
+        Chart.defaults.color = '#64748b';
+
+        // Setup for Bar Chart (Comparison Jan vs Feb)
+        const ctxSales = document.getElementById('salesChart').getContext('2d');
+        new Chart(ctxSales, {
+            type: 'bar',
+            data: {
+                labels: ['มกราคม (Jan)', 'กุมภาพันธ์ (Feb)'],
+                datasets: [
+                    {
+                        label: 'เป้าหมาย',
+                        data: [600000, 600000],
+                        backgroundColor: 'rgba(203, 213, 225, 0.5)', // Slate-300
+                        borderColor: 'rgba(203, 213, 225, 1)',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barPercentage: 0.7
+                    },
+                    {
+                        label: 'ยอดทำได้จริง',
+                        data: [668691, 402238],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.9)', // Blue for Jan (Success)
+                            'rgba(239, 68, 68, 0.9)'  // Red for Feb (Missed)
+                        ],
+                        borderColor: [
+                            'rgba(37, 99, 235, 1)',
+                            'rgba(239, 68, 68, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barPercentage: 0.7
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'top',
+                        labels: { usePointStyle: true, boxWidth: 8 }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.dataset.label + ': ' + context.raw.toLocaleString() + ' บาท';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9',
+                            drawBorder: false
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                if(value >= 1000) return value/1000 + 'k';
+                                return value;
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Setup for Doughnut Chart (Feb Progress)
+        const ctxProgress = document.getElementById('progressChart').getContext('2d');
+        new Chart(ctxProgress, {
+            type: 'doughnut',
+            data: {
+                labels: ['ยอดที่ทำได้', 'ส่วนที่ขาดจากเป้า'],
+                datasets: [{
+                    data: [402238, 197762], // Actual vs Remaining
+                    backgroundColor: [
+                        '#f97316', // Orange-500
+                        '#f1f5f9'  // Slate-100
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { 
+                            padding: 20,
+                            usePointStyle: true,
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.label + ': ' + context.raw.toLocaleString() + ' บาท';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Communication Error Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .text-detail {
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        .bar-transition {
+            transition: width 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 bg-gradient-to-r from-indigo-600 to-violet-600 p-8 rounded-3xl shadow-xl text-white">
+            <div>
+                <h1 class="text-3xl font-extrabold tracking-tight">Report Dashboard</h1>
+                <p class="text-indigo-100 opacity-90 mt-1">สรุปข้อผิดพลาดจากการสื่อสาร • มกราคม - กุมภาพันธ์ 2026</p>
+            </div>
+            <div class="mt-6 md:mt-0 flex items-center bg-white/10 p-4 rounded-2xl backdrop-blur-md">
+                <div class="text-right">
+                    <span class="text-xs uppercase tracking-wider text-indigo-200 block font-bold">Team Performance</span>
+                    <span class="font-semibold block text-white">ตั๊กกี้ & แอน</span>
+                </div>
+                <div class="ml-4 pl-4 border-l border-white/20">
+                    <div class="w-10 h-10 rounded-full bg-emerald-400 flex items-center justify-center font-bold text-emerald-900">KPI</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Comparison Chart (New Section) -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+            <!-- Summary Table from New Data -->
+            <div class="lg:col-span-2 bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden">
+                <div class="p-6 border-b border-slate-50 bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-indigo-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path></svg>
+                        สถิติข้อผิดพลาดรายบุคคล (ม.ค. - ก.พ.)
+                    </h3>
+                </div>
+                <div class="p-6">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-slate-400 uppercase text-[10px] font-bold tracking-widest border-b border-slate-100">
+                                <th class="pb-4">ผู้รับผิดชอบ</th>
+                                <th class="pb-4 text-center">เป้าหมาย</th>
+                                <th class="pb-4 text-center">ม.ค. (ครั้ง)</th>
+                                <th class="pb-4 text-center">ก.พ. (ครั้ง)</th>
+                                <th class="pb-4">แนวโน้ม</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            <tr>
+                                <td class="py-4 font-bold text-slate-700">ตั๊กกี้</td>
+                                <td class="py-4 text-center text-slate-500">2</td>
+                                <td class="py-4 text-center font-bold text-rose-500">4</td>
+                                <td class="py-4 text-center font-bold text-emerald-500">0</td>
+                                <td class="py-4">
+                                    <span class="text-xs font-bold text-emerald-500 flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7-7-7 7"></path></svg>
+                                        ปรับปรุงดีมาก
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 font-bold text-slate-700">แอน</td>
+                                <td class="py-4 text-center text-slate-500">2</td>
+                                <td class="py-4 text-center font-bold text-emerald-500">0</td>
+                                <td class="py-4 text-center font-bold text-rose-500">2</td>
+                                <td class="py-4">
+                                    <span class="text-xs font-bold text-rose-400 flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path></svg>
+                                        ควรเฝ้าระวัง
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Visual Bar Chart Comparison -->
+            <div class="bg-white p-6 rounded-[2rem] shadow-xl border border-slate-100 flex flex-col justify-center">
+                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-6">ภาพรวมเปรียบเทียบรายเดือน</h3>
+                <div class="space-y-6">
+                    <div>
+                        <div class="flex justify-between text-xs font-bold mb-2">
+                            <span class="text-slate-600">มกราคม (ม.ค.)</span>
+                            <span class="text-rose-500">4 ครั้ง</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                            <div class="bg-rose-500 h-full rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs font-bold mb-2">
+                            <span class="text-slate-600">กุมภาพันธ์ (ก.พ.)</span>
+                            <span class="text-emerald-500">2 ครั้ง</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                            <div class="bg-emerald-500 h-full rounded-full" style="width: 50%"></div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-400 italic mt-4 text-center">หมายเหตุ: เดือน ก.พ. ลดลงจากเดือน ม.ค. ถึง 50%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards (Focus on Feb) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10 text-slate-800">
+            <div class="glass-card p-6 rounded-3xl shadow-lg border-b-4 border-rose-500 transform transition hover:scale-105">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="bg-rose-100 p-3 rounded-2xl">
+                        <svg class="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <span class="text-xs font-bold text-rose-500 bg-rose-50 px-2 py-1 rounded-lg">ก.พ. ACTUAL</span>
+                </div>
+                <div class="text-slate-500 text-sm font-medium">จำนวนข้อผิดพลาดจริง</div>
+                <div class="text-5xl font-black text-slate-800 mt-2">2 <span class="text-xl font-normal text-slate-400">ครั้ง</span></div>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl shadow-lg border-b-4 border-indigo-500 transform transition hover:scale-105">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="bg-indigo-100 p-3 rounded-2xl">
+                        <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <span class="text-xs font-bold text-indigo-500 bg-indigo-50 px-2 py-1 rounded-lg">GOAL</span>
+                </div>
+                <div class="text-slate-500 text-sm font-medium">เป้าหมาย (KPI)</div>
+                <div class="text-5xl font-black text-slate-800 mt-2">≤ 2 <span class="text-xl font-normal text-slate-400">ครั้ง</span></div>
+            </div>
+
+            <div class="glass-card p-6 rounded-3xl shadow-lg border-b-4 border-emerald-500 transform transition hover:scale-105">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="bg-emerald-100 p-3 rounded-2xl">
+                        <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    </div>
+                    <span class="text-xs font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-lg">STATUS</span>
+                </div>
+                <div class="text-slate-500 text-sm font-medium">สถานะรวมเดือน ก.พ.</div>
+                <div class="mt-4">
+                    <span class="px-4 py-2 rounded-full text-sm font-bold bg-emerald-500 text-white shadow-md">
+                        ผ่านเกณฑ์ (On Target)
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Details Table for February -->
+        <div class="bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden mb-10">
+            <div class="p-8 border-b border-slate-50 bg-slate-50/50 flex items-center justify-between">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center">
+                    <span class="w-2 h-8 bg-indigo-500 rounded-full mr-4"></span>
+                    รายละเอียดบันทึกปัญหา (ประจำเดือน ก.พ.)
+                </h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-slate-400 uppercase text-[11px] font-bold tracking-widest border-b border-slate-100">
+                            <th class="px-8 py-5">วันที่</th>
+                            <th class="px-8 py-5">ขนส่ง / ลูกค้า</th>
+                            <th class="px-8 py-5 w-2/5">รายละเอียดปัญหา</th>
+                            <th class="px-8 py-5 text-center">หมวด</th>
+                            <th class="px-8 py-5">ผู้รับผิดชอบ</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        <tr class="hover:bg-indigo-50/30 transition-colors group">
+                            <td class="px-8 py-6 text-sm font-bold text-slate-400">10-Feb-26</td>
+                            <td class="px-8 py-6">
+                                <div class="text-slate-800 font-bold">พี่หมาน</div>
+                                <div class="text-indigo-500 text-xs font-medium">แตงโมผ้าม่าน</div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <p class="text-slate-600 text-detail leading-relaxed bg-slate-50 p-4 rounded-2xl group-hover:bg-white transition-colors">
+                                    <span class="font-semibold text-rose-500">คืนสินค้า:</span> ท่อ 1 1/2"x5 เพชร (50 เส้น) และ ท่อ 2" x5 เพชร (30 เส้น) 
+                                    <br>
+                                    <span class="text-slate-400 text-xs italic">สาเหตุ: ทำใบเสนอราคาผิดพลาด (ต้องการชั้นสินค้าต่างกัน)</span>
+                                </p>
+                            </td>
+                            <td class="px-8 py-6 text-center">
+                                <span class="bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-lg text-xs">01</span>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="flex items-center text-sm font-semibold text-slate-700">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-400 mr-2"></span> แอน
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-indigo-50/30 transition-colors group">
+                            <td class="px-8 py-6 text-sm font-bold text-slate-400">25-Feb-26</td>
+                            <td class="px-8 py-6">
+                                <div class="text-slate-800 font-bold">พี่หมาน</div>
+                                <div class="text-indigo-500 text-xs font-medium">โชคชัยรุ่งเรืองกิจ</div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <p class="text-slate-600 text-detail leading-relaxed bg-slate-50 p-4 rounded-2xl group-hover:bg-white transition-colors">
+                                    <span class="font-semibold text-rose-500">คืนสินค้า:</span> สามทาง 3/4" ท่อน้ำไทย (36 ตัว) 
+                                    <br>
+                                    <span class="text-slate-400 text-xs italic">สาเหตุ: จัดของผิดพลาด ลูกค้าสั่งเป็น "ข้องอ" แต่สื่อสารผิดเป็น "สามทาง"</span>
+                                </p>
+                            </td>
+                            <td class="px-8 py-6 text-center">
+                                <span class="bg-amber-100 text-amber-700 font-bold px-3 py-1 rounded-lg text-xs">10</span>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="flex items-center text-sm font-semibold text-slate-700">
+                                    <span class="w-2 h-2 rounded-full bg-violet-400 mr-2"></span> โจ-แอน
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center pb-10">
+            <p class="text-slate-400 text-xs font-medium uppercase tracking-widest">© 2026 Monthly Insight Dashboard • ข้อมูลอัปเดต ณ กุมภาพันธ์ 2569</p>
+        </div>
+    </div>
+
+</body>
+</html>
